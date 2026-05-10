@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>ACGN索引 · 站点导航</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a1a;
+            padding: 20px 16px 60px;
+            color: #eef;
+        }
+
+        .experiment-badge {
+            background: #5fad56;
+            color: #0a0a1a;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-left: 12px;
+            vertical-align: middle;
+            display: inline-block;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 16px 0 12px;
+            border-bottom: 1px solid #334;
+            margin-bottom: 28px;
+        }
+
+        .title-box h1 {
+            font-size: 26px;
+            background: linear-gradient(135deg, #fff, #7cb8ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .title-box p {
+            font-size: 12px;
+            color: #889;
+            margin-top: 4px;
+        }
+
+        .refresh-btn {
+            background: #1e1e3a;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #7cb8ff;
+            border: 1px solid #7cb8ff;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .refresh-btn:active { transform: scale(0.96); }
+        .refresh-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .category {
+            margin-bottom: 32px;
+            background: rgba(20, 20, 36, 0.6);
+            border-radius: 24px;
+            padding: 16px 18px;
+            border: 1px solid #2a2a44;
+        }
+        .category-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            padding-left: 8px;
+            border-left: 4px solid;
+        }
+        .direct .category-title { border-left-color: #5fad56; color: #c8e6c9; }
+        .proxy .category-title { border-left-color: #f2c94c; color: #fff3c9; }
+        .dead .category-title { border-left-color: #b91c1c; color: #fcd9d9; }
+
+        .link-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        @media (min-width: 700px) {
+            .link-list { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .link-card {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            padding: 10px 14px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.15s;
+            border: 1px solid #2a2a44;
+        }
+        .link-card:hover,
+        .link-card:focus-visible {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: #7cb8ff;
+            outline: none;
+        }
+
+        .link-icon {
+            width: 36px;
+            height: 36px;
+            background: #0f0f1a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .link-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+        .icon-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: #7cb8ff;
+            background: #0f0f1a;
+            border-radius: 10px;
+        }
+        .link-info { flex: 1; }
+        .link-name { font-size: 14px; font-weight: 500; color: #fff; }
+        .link-url { font-size: 10px; color: #889; margin-top: 2px; word-break: break-all; }
+        .status-badge {
+            font-size: 9px;
+            background: #1a1a2e;
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 20px;
+            margin-top: 4px;
+            color: #aaa;
+        }
+        .link-arrow { color: #7cb8ff; font-size: 16px; }
+
+        .easter-egg {
+            text-align: center;
+            margin-top: 40px;
+            padding: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #7cb8aa;
+            background: rgba(0,0,0,0.3);
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .easter-egg:active { transform: scale(0.98); }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-card {
+            background: #1a1a2a;
+            border-radius: 24px;
+            padding: 20px;
+            max-width: 90%;
+            max-height: 80%;
+            overflow: auto;
+            border: 1px solid #f2c94c;
+        }
+        .modal-card h3 { margin-bottom: 12px; color: #f2c94c; }
+        .modal-card table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        .modal-card td, .modal-card th {
+            border: 1px solid #334;
+            padding: 6px 8px;
+        }
+        .modal-card button {
+            margin-top: 16px;
+            background: #f2c94c;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+        .empty-msg {
+            text-align: center;
+            padding: 24px;
+            color: #889;
+        }
+        .disclaimer {
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            margin-top: 20px;
+            border-top: 1px solid #2a2a44;
+            padding-top: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="title-box">
+            <h1>📡 ACGN 索引站 <span class="experiment-badge">— 仅供参考</span></h1>
+            <p>探测结果可能存在误差，以实际访问为准</p>
+        </div>
+        <button class="refresh-btn" id="refreshBtn" aria-label="探测站点存活状态">⟳ 探测存活</button>
+    </div>
+
+    <div class="category direct">
+        <div class="category-title">🟢 直连区</div>
+        <div class="link-list" id="directList"></div>
+    </div>
+    <div class="category proxy">
+        <div class="category-title">🌍 海外区（需代理）</div>
+        <div class="link-list" id="proxyList"></div>
+    </div>
+    <div class="category dead">
+        <div class="category-title">💀 失效/超时区</div>
+        <div class="link-list" id="deadList"></div>
+    </div>
+
+    <div class="easter-egg" id="qqEgg" role="button" tabindex="0" aria-label="点击加入交流群">🐧 二十世纪美国农场 → 点击加群</div>
+    <div class="disclaimer">⚠️ 探测功能为试验性功能，结果仅供参考，请以实际访问情况为准</div>
+</div>
+
+<div id="reportModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-card">
+        <h3>📋 探测报告（仅供参考）</h3>
+        <div id="reportBody">探测中...</div>
+        <button id="closeReportBtn">确认</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ----- 原始数据 -----
+        const SITES = {
+            direct: [
+                { name: "触摸gal", url: "https://www.touchgal.com/" },
+                { name: "下雪阁", url: "https://xiayuge.top/" },
+                { name: "西林辞苑", url: "https://www.xilinciyua.cc/" },
+                { name: "心酷动漫", url: "https://www.shinnku.com/" },
+                { name: "恋站ACG", url: "https://lzacg.org/" },
+                { name: "亭亭立", url: "https://www.ttloli.com/" },
+                { name: "樱花之星", url: "https://sakustar.moe/" },
+                { name: "ACG资源站", url: "https://www.acgnzy.com/" },
+                { name: "酒井里奥", url: "https://sakakirio.com/" },
+                { name: "萝莉ACG", url: "https://loliacg.xyz/" },
+                { name: "Galzy", url: "https://galzy.eu.org/" },
+                { name: "2dfan下载", url: "https://2dfan.org/downloads/" },
+                { name: "CNGAL", url: "https://www.cngal.org/" },
+                { name: "ACG资源网", url: "https://acgyw.xyz/category/game/" },
+                { name: "VikACG", url: "https://www.vikacg.com/post" },
+                { name: "画廊PW", url: "https://gallibrary.pw/" },
+                { name: "ACG云馆", url: "https://acgyyg.ru/" },
+                { name: "ACG知道", url: "https://acgknow.me/" },
+                { name: "壹叁叁", url: "https://1ov3.top/" },
+                { name: "GalSaop", url: "https://gal.saop.cc/" },
+                { name: "樱雨Gal", url: "https://yinghu.netlify.app/" },
+                { name: "子零", url: "https://zi0.cc/" },
+                { name: "昆伽", url: "https://www.kungal.com/zh-cn" },
+                { name: "WafuWafu", url: "https://wafuwafu.com/" },
+                { name: "GalXP", url: "https://www.galxp.com/" },
+                { name: "Kdays论坛", url: "https://bbs2.kdays.net/" },
+                { name: "ACGGW", url: "https://www.acggw.club/" },
+                { name: "KFpromax", url: "https://kfpromax.com/index.php" },
+                { name: "甜Gal", url: "https://www.tiangal.com/" },
+                { name: "空ACG", url: "https://www.soraacg.com/" },
+                { name: "零零ACG", url: "https://llssacg.live/" },
+                { name: "ACG趣", url: "https://acgfun.moe/" },
+                { name: "芙芙Gal", url: "https://fufugal.com/" },
+                { name: "ACGN社区", url: "https://www.acgnsq.com/" },
+                { name: "BBFTT", url: "https://bbftt.github.io/" },
+                { name: "木图ACG", url: "https://www.mtuacg.cc/portal.php" },
+                { name: "老王2222", url: "https://www.laowang2222.com/" },
+                { name: "爱色影", url: "https://www.aisecy.com/" },
+                { name: "FunForACG", url: "https://funforacg.github.io/" },
+                { name: "Lzone", url: "https://lzone.moe/Home/About" },
+                { name: "GogalGame", url: "https://www.gogalgame.com/" },
+                { name: "GTACGG", url: "https://gtacgg.com/" },
+                { name: "FHXY", url: "https://fh-xy.net/" },
+                { name: "DMO LOL", url: "https://dmo.lol/" },
+                { name: "2cyshare", url: "https://www.2cyshare.com/" },
+                { name: "Upacg", url: "https://www.upacg.cc/" },
+                { name: "Xhcyra", url: "https://xhcyra.com/" },
+                { name: "YZWY", url: "https://www.yzwy.cc/" },
+                { name: "YX ACGCYLY", url: "https://yx.acgcyly.com/yxzy/rxyx" },
+                { name: "Wuaiacg", url: "https://www.wuaiacg1.com/" },
+                { name: "05fx", url: "https://05fx.022016.xyz/" },
+                { name: "Zyxz Ailoli", url: "https://zyxz.ailoli.us/" },
+                { name: "Sayafx", url: "https://www.sayafx.top/" },
+                { name: "Bzhai", url: "https://www.bzhai.com/game.html" },
+                { name: "Galcg", url: "https://www.galcg.org/" },
+                { name: "Seikuu", url: "https://bbs2.seikuu.com/" },
+                { name: "Sumisora", url: "https://bbs.sumisora.net/index.php" },
+                { name: "Hikarinagi", url: "https://www.hikarinagi.com/" },
+                { name: "66gal", url: "https://www.66gal.com/" },
+                { name: "Yuanzkong", url: "https://yuanzkong.github.io/" },
+                { name: "Bakadax", url: "https://file.bakadax.top/" },
+                { name: "Ille13", url: "https://www.ille13.com/" },
+                { name: "Newyx", url: "https://m.newyx.net/heji/galgame/" },
+                { name: "ACGNDOG", url: "https://www.acgndog.com/category/game/lvg" },
+                { name: "Pan CYCyg", url: "https://pan.cycg.xyz/" },
+                { name: "Pan Cangshui", url: "https://pan.cangshui.net/" },
+                { name: "Portbox", url: "https://portbox.lol/" },
+                { name: "7dmao", url: "https://www.7dmao.com/zhuti/46/1.html" },
+                { name: "114514", url: "https://114514.1919180.xyz/" },
+                { name: "Nekogal", url: "https://www.nekogal.com/" },
+                { name: "Letaoke", url: "https://www.letaoke.cn/" },
+                { name: "Xbgame", url: "https://www.xbgame.net/" },
+                { name: "2cycdx", url: "https://www.2cycdx.com/forum.php?mod=forumdisplay&fid=42&mobile=2" },
+                { name: "Cyzd", url: "https://www.cyzd.me" },
+                { name: "Acg880", url: "https://www.acg880.com/" },
+                { name: "Acgdh", url: "https://www.acgdh.cc/" },
+                { name: "Nav Acgsq", url: "https://nav.acgsq.com/acgdh" },
+                { name: "Acgdhwz", url: "https://acgdhwz.com/" },
+                { name: "Acgfans", url: "https://www.acgfans.me/" },
+                { name: "Extnav", url: "https://www.extnav.cn/acgn" },
+                { name: "Mengzhan65", url: "https://vxw2.mengzhan65.top/index.php" },
+                { name: "Coklw", url: "https://coklw.xyz/archives/category/yx" },
+                { name: "Hggard", url: "https://hggard.com/Blog/List/4" },
+                { name: "Otomedream", url: "https://www.otomedream.com/forum.php?mod=forumdisplay&fid=35852&mobile=2" },
+                { name: "Erogames", url: "https://erogames.com/" },
+                { name: "Freegogpcgames", url: "https://freegogpcgames.com/visual-novel/" },
+                { name: "Kimochi", url: "https://kimochi.info/" },
+                { name: "Acgmes", url: "https://www.acgmes.com/" },
+                { name: "Hentai-sharing", url: "https://hentai-sharing.net/" },
+                { name: "Hahajingzi", url: "https://hahajingzi.github.io/" },
+                { name: "Ryuugames", url: "https://www.ryuugames.com/" },
+                { name: "R18zgqinc", url: "https://r18zgqinc.wordpress.com/" },
+                { name: "Acgbk", url: "https://acgbk.top/" },
+                { name: "Gacg", url: "https://www.gacg.pro/" },
+                { name: "Acgns", url: "https://www.acgns.org/" },
+                { name: "Slgjoy", url: "https://www.slgjoy.top/category/youxi/" }
+            ],
+            proxy: [
+                { name: "Freem", url: "https://www.freem.ne.jp/" },
+                { name: "Mwmoe", url: "https://mwmoe.lol/" },
+                { name: "MSK眼科", url: "http://www.msk-eyelasik.cn/" }
+            ],
+            dead: [
+                { name: "Galgame.ink", url: "https://www.galgame.ink/" },
+                { name: "Moyegalga", url: "https://moyegalga.me/tag/krkr/" },
+                { name: "轻语ACG", url: "https://post.qingjuacg.org/" },
+                { name: "IACG世界", url: "https://iacg.world/" },
+                { name: "Galgameacgjohn", url: "https://www.galgameacgjohn.top/" },
+                { name: "Pan jlbx", url: "https://pan.jlbx.xyz/" }
+            ]
+        };
+
+        // ----- 全局状态 -----
+        let dynamicSites = [];        // 存放所有可探测站点 { name, url, category, alive }
+        let pendingReport = null;     // 暂存探测结果
+
+        // ----- 辅助函数 -----
+        function getHost(url) {
+            try {
+                return new URL(url).hostname.replace(/^www\./, '');
+            } catch {
+                return url.split('/')[2] || url;
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, m => {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // 增强探测：带重试 (最多1次)
+        function probeReachableWithRetry(url, retries = 1) {
+            return new Promise((resolve) => {
+                const attempt = (remaining) => {
+                    const img = new Image();
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => {
+                        img.src = '';
+                        controller.abort();
+                        if (remaining > 0) {
+                            attempt(remaining - 1);
+                        } else {
+                            resolve(false);
+                        }
+                    }, 4000);
+                    img.onload = () => {
+                        clearTimeout(timeoutId);
+                        resolve(true);
+                    };
+                    img.onerror = () => {
+                        clearTimeout(timeoutId);
+                        if (remaining > 0) {
+                            attempt(remaining - 1);
+                        } else {
+                            resolve(false);
+                        }
+                    };
+                    img.src = url + 'favicon.ico?t=' + Date.now();
+                };
+                attempt(retries);
+            });
+        }
+
+        // 并发探测，限制并发数
+        async function probeUrls(urls, limit = 6) {
+            const results = new Array(urls.length).fill(false);
+            const queue = urls.map((url, idx) => ({ url, idx }));
+            const workers = Array(Math.min(limit, urls.length)).fill().map(async () => {
+                while (queue.length) {
+                    const { url, idx } = queue.shift();
+                    const ok = await probeReachableWithRetry(url, 1);
+                    results[idx] = ok;
+                }
+            });
+            await Promise.all(workers);
+            return results;
+        }
+
+        // 生成图标 HTML (安全转义host)
+        function createIconHtml(host) {
+            const safeHost = escapeHtml(host);
+            return `
+                <div class="link-icon">
+                    <img src="https://${safeHost}/favicon.ico" loading="lazy" alt=""
+                         style="width:100%;height:100%;object-fit:contain;"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="icon-placeholder" style="display:none;">ACGN</div>
+                </div>
+            `;
+        }
+
+        // 渲染页面
+        function render() {
+            const directItems = dynamicSites.filter(s => s.category === 'direct');
+            const deadItems = dynamicSites.filter(s => s.category === 'dead');
+            const proxyItems = SITES.proxy;   // 海外区不探测，直接展示
+
+            const buildHTML = (items, showStatus = true) => {
+                if (!items.length) return '<div class="empty-msg">✨ 暂无</div>';
+                return items.map(item => {
+                    const host = getHost(item.url);
+                    const statusLabel = item.alive === true ? '✓ 可达' : (item.alive === false ? '✗ 不可达' : '❔ 未测');
+                    const statusClass = item.alive === true ? 'direct' : (item.alive === false ? 'dead' : '');
+                    return `
+                        <a href="${escapeHtml(item.url)}" class="link-card" target="_blank" rel="noopener noreferrer">
+                            ${createIconHtml(host)}
+                            <div class="link-info">
+                                <div class="link-name">${escapeHtml(item.name)}</div>
+                                <div class="link-url">${escapeHtml(host)}</div>
+                                ${showStatus ? `<div class="status-badge ${statusClass}">${statusLabel}</div>` : ''}
+                            </div>
+                            <span class="link-arrow">→</span>
+                        </a>
+                    `;
+                }).join('');
+            };
+
+            document.getElementById('directList').innerHTML = buildHTML(directItems, true);
+            document.getElementById('proxyList').innerHTML = buildHTML(proxyItems, false);
+            document.getElementById('deadList').innerHTML = buildHTML(deadItems, true);
+        }
+
+        // 初始化动态站点列表
+        function initDynamicSites() {
+            dynamicSites = [];
+            SITES.direct.forEach(s => dynamicSites.push({ ...s, category: 'direct', alive: null }));
+            SITES.dead.forEach(s => dynamicSites.push({ ...s, category: 'dead', alive: null }));
+        }
+
+        // 开始探测
+        async function startProbe() {
+            const btn = document.getElementById('refreshBtn');
+            btn.disabled = true;
+            btn.textContent = '⟳ 探测中...';
+
+            const urls = dynamicSites.map(s => s.url);
+            const results = await probeUrls(urls, 6);
+
+            const changes = [];
+            for (let i = 0; i < dynamicSites.length; i++) {
+                const alive = results[i];
+                const oldCat = dynamicSites[i].category;
+                const newCat = alive ? 'direct' : 'dead';
+                changes.push({
+                    idx: i,
+                    name: dynamicSites[i].name,
+                    oldCat,
+                    newCat,
+                    alive
+                });
+            }
+
+            const toDirect = changes.filter(c => c.oldCat === 'dead' && c.newCat === 'direct');
+            const toDead = changes.filter(c => c.oldCat === 'direct' && c.newCat === 'dead');
+
+            let reportHtml = '';
+            if (toDirect.length) {
+                reportHtml += `<h4>📈 失效区 → 直连区 (${toDirect.length})</h4><table><thead><tr><th>站点</th><th>结果</th></tr></thead><tbody>`;
+                toDirect.forEach(c => reportHtml += `<tr><td>${escapeHtml(c.name)}</td><td>可达</td></tr>`);
+                reportHtml += `</tbody></table>`;
+            }
+            if (toDead.length) {
+                reportHtml += `<h4>📉 直连区 → 失效区 (${toDead.length})</h4><table><thead><tr><th>站点</th><th>结果</th></tr></thead><tbody>`;
+                toDead.forEach(c => reportHtml += `<tr><td>${escapeHtml(c.name)}</td><td>不可达</td></tr>`);
+                reportHtml += `</tbody></table>`;
+            }
+            if (!toDirect.length && !toDead.length) {
+                reportHtml += `<p>✨ 无变动，所有站点状态与上次一致。</p>`;
+            }
+            reportHtml += `<p style="margin-top:12px;color:#aaa;">※ 探测仅尝试加载图标，结果仅供参考。</p>`;
+
+            pendingReport = changes;
+            const modal = document.getElementById('reportModal');
+            document.getElementById('reportBody').innerHTML = reportHtml;
+            modal.style.display = 'flex';
+
+            btn.disabled = false;
+            btn.textContent = '⟳ 探测存活';
+        }
+
+        // 应用探测结果（更新分类与存活标记）
+        function applyReport() {
+            if (!pendingReport) return;
+            for (const ch of pendingReport) {
+                dynamicSites[ch.idx].category = ch.newCat;
+                dynamicSites[ch.idx].alive = ch.alive;
+            }
+            render();
+            pendingReport = null;
+            document.getElementById('reportModal').style.display = 'none';
+        }
+
+        // ----- 事件绑定 -----
+        document.getElementById('refreshBtn').addEventListener('click', startProbe);
+        document.getElementById('closeReportBtn').addEventListener('click', applyReport);
+        // 点击模态窗背景关闭
+        document.getElementById('reportModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('reportModal')) applyReport();
+        });
+        // QQ群彩蛋
+        const qqEgg = document.getElementById('qqEgg');
+        qqEgg.addEventListener('click', () => {
+            window.open('https://qun.qq.com/universal-share/share?ac=1&authKey=JW1QktW0FLJf%2B0amxhCrt2Tciwsbi9Q22AXg57sx%2FhALND1gOghuqTkVXwMN69OX', '_blank');
+        });
+        qqEgg.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                window.open('https://qun.qq.com/universal-share/share?ac=1&authKey=JW1QktW0FLJf%2B0amxhCrt2Tciwsbi9Q22AXg57sx%2FhALND1gOghuqTkVXwMN69OX', '_blank');
+            }
+        });
+
+        // ----- 启动 -----
+        initDynamicSites();
+        render();
+    })();
+</script>
+</body>
+</html>
