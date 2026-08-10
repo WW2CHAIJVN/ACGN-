@@ -4,6 +4,9 @@
 @media (min-width: 1024px) {
 
 /* ---- 基础布局 ---- */
+/* 桌面端常驻左侧导航栏:body 左侧留出侧边栏宽度,内容区自动右移并居中。
+   展开态 280px,折叠态 64px(由 body.sidebar-collapsed 切换)。
+   transition 让折叠/展开有平滑过渡。*/
 body {
     font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
     background: var(--md-surface);
@@ -12,6 +15,12 @@ body {
     min-height: 100vh;
     margin: 0;
     padding: 0;
+    padding-left: 280px;
+    transition: padding-left var(--md-duration-long, 400ms) var(--md-easing-emphasized, cubic-bezier(0.2,0,0,1));
+}
+
+body.sidebar-collapsed {
+    padding-left: 64px;
 }
 
 .container {
@@ -19,12 +28,80 @@ body {
     margin: 0 auto;
 }
 
-/* ---- 隐藏移动端/旧版组件 ---- */
-.menu-btn,
-.sidebar,
+/* ---- 隐藏移动端专属组件 / 旧版菊花链导航 ----
+   注意:桌面端不再隐藏 .menu-btn / .sidebar —— 它们构成常驻左侧导航栏。
+   仅隐藏移动端抽屉遮罩(.sidebar-mask)和旧版 .desktop-nav。*/
 .sidebar-mask,
 .desktop-nav {
     display: none !important;
+}
+
+/* ============================================================
+   常驻左侧导航栏 (.sidebar)
+   桌面端复用移动端 .sidebar DOM,但改为常驻贴边显示。
+   展开态 280px(图标+文字),折叠态 64px(仅图标)。
+   ============================================================ */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    /* 覆盖移动端的 left:-320px 屏外定位,常驻贴边 */
+    transform: none;
+    /* 背景与边框沿用移动端定义,这里只覆盖几何尺寸 */
+    background: var(--md-surface-container);
+    border-right: 1px solid var(--md-outline-variant);
+    box-shadow: var(--md-elevation-3);
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0;
+    transition: width var(--md-duration-long, 400ms) var(--md-easing-emphasized, cubic-bezier(0.2,0,0,1));
+    overflow: hidden;
+}
+
+.sidebar.collapsed {
+    width: 64px;
+}
+
+/* 侧边栏导航区滚动 */
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* ---- 桌面端常驻态:关闭移动端的逐个入场动画,直接显示 ---- */
+.sidebar .sidebar-btn {
+    opacity: 1;
+    transform: none;
+    animation: none;
+}
+
+/* 折叠态:隐藏按钮文字,只留图标;图标居中 */
+.sidebar.collapsed .sidebar-btn {
+    justify-content: center;
+    padding: 12px 0;
+    white-space: nowrap;
+}
+.sidebar.collapsed .sidebar-btn span {
+    display: none;
+}
+
+/* 折叠态纯文本按钮(无 icon):显示一个圆点占位,避免完全空白 */
+.sidebar.collapsed .sidebar-btn.no-icon::after {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.5;
 }
 
 /* ============================================================
