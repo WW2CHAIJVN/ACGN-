@@ -1,0 +1,63 @@
+/* ========== 首页布局:MD3 TopAppBar + 内容区 ==========
+   卡片网格 / 分区 / 进度条 / 探测逻辑样式由 components.css 提供,
+   本文件只负责顶栏(.top-app-bar)与首页内容区的布局。 */
+
+/* ---- MD3 TopAppBar ----
+   sticky 吸顶,flex 布局:汉堡菜单 | 标题 | 提示区 | 探测按钮 | 主题按钮 */
+.top-app-bar {
+    position: sticky;
+    top: 0;
+    z-index: 900;            /* 低于侧边栏(1100)、反馈弹窗(1200) */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--md-surface);
+    border-bottom: 1px solid var(--md-outline-variant);
+    /* 玻璃质感:滚动时透出背景(现代 MD3 顶栏常见处理) */
+    backdrop-filter: blur(8px);
+}
+
+.top-app-bar-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--md-on-surface);
+    margin: 0;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+
+/* 提示区占满中间空间(样式继承 components.css 的 .alert-area) */
+
+/* ---- 移动端:顶栏紧凑 ---- */
+@media (max-width: 1023px) {
+    .top-app-bar {
+        padding: 8px 8px 12px;
+    }
+    .top-app-bar-title {
+        font-size: 1.15rem;
+        letter-spacing: 0.3px;
+    }
+    /* 移动端探测按钮只显示图标,节省空间 */
+    .top-app-bar .refresh-btn {
+        padding: 0 16px;
+    }
+}
+
+/* ---- 内容区间距 ---- */
+.container {
+    padding: 0 16px 24px;
+}
+
+#categories {
+    transition: opacity var(--md-duration-medium, 250ms) var(--md-easing-standard, cubic-bezier(0.2,0,0,1));
+}
+
+/* 移动端内容区内边距由 mobile/layout.css 的 body padding:16px 负责,
+   这里避免双重内边距 */
+@media (max-width: 1023px) {
+    .container {
+        padding: 0;
+    }
+}
