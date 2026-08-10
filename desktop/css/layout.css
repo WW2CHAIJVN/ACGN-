@@ -1,0 +1,391 @@
+/* ========== 桌面端布局 ==========
+   NASA 风格三层导航布局。仅在 min-width: 1024px 生效。 */
+
+@media (min-width: 1024px) {
+
+/* ---- 基础布局 ---- */
+body {
+    font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background: var(--md-surface);
+    color: var(--md-on-surface);
+    line-height: 1.5;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ---- 隐藏移动端/旧版组件 ---- */
+.menu-btn,
+.sidebar,
+.sidebar-mask,
+.desktop-nav {
+    display: none !important;
+}
+
+/* ============================================================
+   第一层：顶部细条 (.topbar)
+   ============================================================ */
+.topbar {
+    height: 28px;
+    background: var(--md-primary);
+    color: #ffffff;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+}
+
+/* ============================================================
+   第二层：Masthead (.masthead)
+   ============================================================ */
+.masthead {
+    height: 64px;
+    background: var(--md-surface);
+    border-bottom: 1px solid var(--md-outline-variant);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+}
+
+.masthead-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.masthead-logo .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--md-primary);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--md-shape-sm, 4px);
+    letter-spacing: 0.5px;
+}
+
+.masthead-logo .site-name {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--md-on-surface);
+}
+
+.masthead-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* 胶囊式按钮 */
+.pill-btn {
+    background: transparent;
+    border: 1px solid var(--md-outline-variant);
+    color: var(--md-on-surface-variant);
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    white-space: nowrap;
+}
+
+.pill-btn:hover {
+    border-color: var(--md-primary);
+    color: var(--md-primary);
+    background: var(--md-primary-container);
+}
+
+.pill-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+/* ============================================================
+   第三层：主导航条 (.mega-nav)
+   ============================================================ */
+.mega-nav {
+    background: var(--md-surface);
+    border-bottom: 2px solid var(--md-outline-variant);
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    padding: 0 16px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.mega-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.mega-item {
+    background: transparent;
+    border: none;
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--md-on-surface-variant);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.15s;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.mega-item:hover {
+    color: var(--md-on-surface);
+}
+
+.mega-item.active {
+    color: var(--md-primary);
+    border-bottom-color: var(--md-primary);
+}
+
+.mega-item svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    margin-right: 6px;
+}
+
+/* ============================================================
+   Mega Menu 面板 (.mega-panel)
+   ============================================================ */
+.mega-panel {
+    background: var(--md-surface-container-low);
+    border-bottom: 1px solid var(--md-outline-variant);
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.mega-group-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--md-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--md-outline-variant);
+}
+
+.mega-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    color: var(--md-on-surface-variant);
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    transition: color 0.12s;
+}
+
+.mega-link:hover {
+    color: var(--md-on-surface);
+}
+
+.mega-link .ml-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--md-surface);
+    border: 1px solid var(--md-outline-variant);
+    border-radius: var(--md-shape-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.mega-link .ml-icon svg {
+    width: 16px;
+    height: 16px;
+    fill: var(--md-on-surface-variant);
+    transition: fill 0.12s;
+}
+
+.mega-link:hover .ml-icon svg {
+    fill: var(--md-primary);
+}
+
+.mega-link .ml-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.mega-link .ml-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--md-on-surface);
+}
+
+.mega-link .ml-desc {
+    font-size: 12px;
+    color: var(--md-on-surface-variant);
+    margin-top: 1px;
+}
+
+/* ============================================================
+   页面标题区 (.page-header) — 原 .header 改名
+   ============================================================ */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 24px 0;
+    padding: 0 12px;
+    flex-wrap: wrap;
+}
+
+.page-header .title-area {
+    flex-shrink: 0;
+}
+
+.page-header .title-area h1 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--md-on-surface);
+    white-space: nowrap;
+    margin: 0;
+}
+
+/* 保留 alert-area 等原有内容 */
+.alert-area {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* ============================================================
+   底部状态栏 (.status-bar)
+   ============================================================ */
+.status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 24px;
+    background: var(--md-surface);
+    border-top: 1px solid var(--md-outline-variant);
+    font-size: 12px;
+    color: var(--md-on-surface-variant);
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    background: #2E7D32;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* ============================================================
+   子页面简化顶部栏
+   ============================================================ */
+.sub-topbar {
+    height: 28px;
+    background: var(--md-primary);
+    color: var(--md-on-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.sub-masthead {
+    height: 64px;
+    background: var(--md-surface);
+    border-bottom: 1px solid var(--md-outline-variant);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+}
+
+.sub-masthead-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sub-logo {
+    width: 36px;
+    height: 36px;
+    background: var(--md-primary);
+    border-radius: var(--md-shape-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--md-on-primary);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+
+.sub-masthead-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--md-on-surface);
+}
+
+.sub-masthead-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sub-back-btn {
+    background: transparent;
+    border: 1px solid var(--md-outline-variant);
+    color: var(--md-on-surface-variant);
+    padding: 6px 16px;
+    border-radius: var(--md-shape-full);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+.sub-back-btn:hover {
+    border-color: var(--md-primary);
+    color: var(--md-primary);
+    background: var(--md-primary-container);
+}
+
+} /* end @media (min-width: 1024px) */

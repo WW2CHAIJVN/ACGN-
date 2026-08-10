@@ -1,0 +1,377 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Helvetica, sans-serif;
+    background: #0a0a0f;
+    color: #eef2ff;
+    padding: 20px;
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* 头部 */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(110, 168, 254, 0.2);
+}
+.back-home {
+    background: transparent;
+    border: none;
+    color: #6ea8fe;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+    text-decoration: none;
+}
+.back-home:active {
+    background: rgba(110, 168, 254, 0.1);
+    transform: scale(0.96);
+}
+.title-area h1 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    background: linear-gradient(135deg, #fff 0%, #8bb5f5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.title-area p {
+    font-size: 0.75rem;
+    color: #6ea8fe;
+    opacity: 0.7;
+    margin-top: 4px;
+}
+.watermark {
+    font-size: 0.7rem;
+    color: rgba(110, 168, 254, 0.25);
+    letter-spacing: 2px;
+}
+
+/* 平台列表 */
+.platform-list {
+    display: flex;
+    flex-direction: column;
+}
+.platform-item {
+    position: relative;
+    padding: 20px 0;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(110, 168, 254, 0.1);
+    transition: padding 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1), border-color 0.35s ease;
+}
+.platform-item:hover {
+    border-bottom-color: rgba(110, 168, 254, 0.3);
+}
+.platform-list .platform-item:last-child {
+    border-bottom: none;
+}
+.platform-info {
+    flex: 1;
+}
+.platform-name {
+    font-size: 2rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+    transition: font-size 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+.platform-desc {
+    font-size: 0.75rem;
+    color: #aaa;
+    opacity: 0.8;
+    transition: opacity 0.35s ease;
+}
+/* 三个点：扩大点击区域（圆形），悬停显示浅色背景 */
+.platform-dots {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    letter-spacing: 4px;
+    color: #6ea8fe;
+    opacity: 0.5;
+    cursor: pointer;
+    transition: opacity 0.35s ease, transform 0.25s ease, background 0.2s ease;
+    z-index: 10;
+    border-radius: 50%;
+}
+.platform-dots:hover {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.05);
+    background: rgba(110, 168, 254, 0.1);
+}
+.platform-dots:active {
+    transform: translateY(-50%) scale(0.96);
+}
+/* hover 变大时调整三个点的位置 */
+.platform-item.hover-expand .platform-dots {
+    top: 50%;
+    transform: translateY(-50%);
+}
+.platform-item.hover-expand .platform-dots:hover {
+    transform: translateY(-50%) scale(1.05);
+}
+
+/* hover 变大效果 */
+.platform-item.hover-expand {
+    padding: 36px 0;
+}
+.platform-item.hover-expand .platform-name {
+    font-size: 7rem;
+}
+
+/* 教程区 */
+.tutorial {
+    display: none;
+    animation: fadeInUp 0.45s ease;
+}
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.tutorial-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(110, 168, 254, 0.15);
+}
+.switch-device {
+    background: rgba(110, 168, 254, 0.08);
+    border: 1px solid rgba(110, 168, 254, 0.25);
+    color: #6ea8fe;
+    padding: 6px 16px;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.switch-device:active {
+    background: rgba(110, 168, 254, 0.2);
+    transform: scale(0.96);
+}
+.video-block {
+    margin-bottom: 28px;
+}
+.video-title {
+    font-size: 0.9rem;
+    font-weight: 450;
+    margin-bottom: 10px;
+    color: #8bc34a;
+}
+video {
+    width: 100%;
+    border-radius: 16px;
+    background: #000;
+    outline: none;
+}
+
+/* 视频占位符 - 未上传提示 */
+.video-placeholder {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, #1a1a2e 0%, #0d1117 100%);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 2px dashed rgba(110, 168, 254, 0.2);
+    transition: all 0.3s ease;
+}
+.video-placeholder:hover {
+    border-color: rgba(110, 168, 254, 0.4);
+    background: linear-gradient(135deg, #1f1f35 0%, #121820 100%);
+}
+.placeholder-icon {
+    font-size: 3rem;
+    opacity: 0.6;
+}
+.placeholder-text {
+    font-size: 1rem;
+    color: #6ea8fe;
+    font-weight: 500;
+}
+.placeholder-sub {
+    font-size: 0.75rem;
+    color: #888;
+}
+.tip {
+    border-left: 2px solid #f2c94c;
+    background: rgba(242, 201, 76, 0.04);
+    padding: 14px 18px;
+    margin: 24px 0;
+    font-size: 0.85rem;
+}
+.step {
+    margin: 20px 0;
+}
+.step-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+}
+.step-num {
+    color: #6ea8fe;
+    font-weight: 500;
+    min-width: 28px;
+}
+.ios-warning {
+    border: none;
+    background: rgba(224, 85, 85, 0.02);
+    border-radius: 24px;
+    padding: 32px 20px;
+    text-align: center;
+}
+.ios-warning p {
+    margin: 12px 0;
+    font-size: 0.95rem;
+}
+.footer {
+    text-align: center;
+    font-size: 0.7rem;
+    color: #6ea8fe;
+    opacity: 0.6;
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 弹窗 - 无边界设计 */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    position: relative;
+    background: #1a1a2a;
+    border-radius: 24px;
+    padding: 28px 24px;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid rgba(110, 168, 254, 0.2);
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+    transition: opacity 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+.modal-overlay.open .modal-content {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+.modal-overlay.closing .modal-content {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+}
+.modal-overlay.closing {
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0);
+    transition: background 0.3s ease, backdrop-filter 0.3s ease;
+}
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.2s ease;
+    line-height: 1;
+}
+.modal-close:hover {
+    color: #e05555;
+}
+.modal-esc {
+    position: absolute;
+    bottom: 12px;
+    right: 20px;
+    font-size: 0.6rem;
+    color: rgba(170, 170, 170, 0.4);
+    letter-spacing: 0.5px;
+}
+.modal-content h3 {
+    font-size: 1.2rem;
+    margin-bottom: 24px;
+    color: #8bb5f5;
+    padding-right: 30px;
+}
+.modal-examples {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 28px;
+}
+.example-item {
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(110, 168, 254, 0.08);
+}
+.example-item:last-child {
+    border-bottom: none;
+}
+.example-item:active {
+    background: rgba(110, 168, 254, 0.05);
+}
+
+@media (max-width: 640px) {
+    .platform-name {
+        font-size: 1.5rem;
+    }
+    .platform-item.hover-expand .platform-name {
+        font-size: 3.8rem;
+    }
+    .platform-dots {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <title>404 - 迷路快乐</title>
+    <link rel="stylesheet" href="shared/css/reset.css?v=md3-8">
+    <link rel="stylesheet" href="shared/css/pages/404.css?v=md3-8">
+    <link rel="stylesheet" href="shared/css/transitions.css?v=md3-8">
+    <link rel="stylesheet" href="desktop/css/layout.css?v=md3-9" media="screen">
+</head>
+<body>
+<div class="sub-topbar">ACGN NAVIGATION SYSTEM</div>
+<div class="sub-masthead">
+    <div class="sub-masthead-left">
+        <div class="sub-logo">ACGN</div>
+        <div class="sub-masthead-title">ACGN导航站</div>
+    </div>
+    <div class="sub-masthead-right">
+        <a href="index.html" class="sub-back-btn">← 返回首页</a>
+    </div>
+</div>
+<div class="container page-enter">
+    <div class="glitch-title">404</div>
+
+    <div class="separator">- - - - - - - - - - - - - - - -</div>
+
+    <!-- 重要信息：置顶 -->
+    <div class="important-msg">
+        页面未找到，可能是链接失效或尚未开发。<br>
+        如果是服务器小 bug 导致的，不影响正常使用。<span class="cursor"></span>
+    </div>
+
+    <!-- 次要信息 -->
+    <div class="sub-msg">
+        站长产能极低，请耐心等待。<br>
+        你可以尝试以下页面：
+    </div>
+
+    <!-- 快捷导航 -->
+    <div class="quick-nav">
+        <a href="index.html">⟨ 首页</a>
+        <a href="class.html">解压教学</a>
+        <a href="devlog.html">开发日志</a>
+        <a href="cve/">CVE 归档</a>
+    </div>
+
+    <!-- 返回首页（醒目） -->
+    <div class="back-home">
+        <a href="index.html">⟨ 返回首页 ⟩</a>
+    </div>
+
+    <footer>[ 迷路快乐 | 404 艺术彩蛋 ]</footer>
+</div>
+
+<script src="shared/js/nav-transition.js?v=md3-8"></script>
+<script>
+    const cursor = document.querySelector('.cursor');
+    let cursorTimer = null;
+    if (cursor) {
+        cursorTimer = setInterval(() => {
+            cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
+        }, 600);
+    }
+    // 页面卸载时清理定时器
+    window.addEventListener('beforeunload', function() {
+        if (cursorTimer) { clearInterval(cursorTimer); cursorTimer = null; }
+    });
+</script>
+</body>
+</html>

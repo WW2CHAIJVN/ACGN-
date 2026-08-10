@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="mdui-theme-light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>ACGN 导航站</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>">
+
+    <!-- Material Design 3 组件库(mdui v2,CDN 引入)
+         用 defer 异步加载,避免 unpkg 网络延迟阻塞业务脚本执行 -->
+    <link rel="stylesheet" href="https://unpkg.com/mdui@2/mdui.css">
+    <script defer src="https://unpkg.com/mdui@2/mdui.global.js"></script>
+
+    <!-- ===== 模块化 CSS 加载顺序 ===== -->
+    <!-- 1. 设计令牌(必须最早,后续样式依赖变量) -->
+    <link rel="stylesheet" href="shared/css/theme.css?v=md3-8">
+    <!-- 2. 通用重置 -->
+    <link rel="stylesheet" href="shared/css/reset.css?v=md3-8">
+    <!-- 3. 全局过渡动画 -->
+    <link rel="stylesheet" href="shared/css/transitions.css?v=md3-8">
+    <!-- 4. 共用组件样式(按钮/卡片/进度条等) -->
+    <link rel="stylesheet" href="shared/css/components.css?v=md3-8">
+    <!-- 5. 音乐播放器组件 -->
+    <link rel="stylesheet" href="shared/css/components/music.css?v=md3-8">
+    <!-- 6. 反馈弹窗组件 -->
+    <link rel="stylesheet" href="shared/css/components/feedback.css?v=md3-8">
+    <!-- 7. 桌面端布局(菊花链导航) -->
+    <link rel="stylesheet" href="desktop/css/layout.css?v=md3-8" media="screen">
+    <!-- 8. 移动端布局(抽屉导航) -->
+    <link rel="stylesheet" href="mobile/css/layout.css?v=md3-8" media="screen">
+
+    <!-- 主题切换脚本:尽早执行防止暗色模式闪烁(FOUC) -->
+    <script src="shared/js/theme.js?v=md3-8"></script>
+</head>
+<body>
+
+<!-- 桌面端 NASA 风格三层导航（移动端 CSS 隐藏） -->
+<div class="topbar" id="topbar"></div>
+<div class="masthead" id="masthead"></div>
+<div class="mega-nav" id="megaNav"></div>
+<div class="mega-panel" id="megaPanel" style="display:none;"></div>
+<div class="status-bar" id="statusBar"></div>
+
+<!-- 移动端：侧边栏遮罩 + 抽屉（桌面端 CSS 隐藏） -->
+<div class="sidebar-mask overlay-enter" id="sidebarMask"></div>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-nav" id="sidebarNav"></div>
+</div>
+
+<!-- 桌面端：菊花链导航（移动端 CSS 隐藏） -->
+<nav class="desktop-nav" id="desktopNav"></nav>
+
+<div class="container page-enter">
+    <div class="header page-header">
+        <button class="menu-btn" id="menuBtn" aria-label="菜单"><svg class="md-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button>
+        <div class="title-area"><h1>ACGN导航站</h1></div>
+        <div class="alert-area" id="alertArea"></div>
+        <button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题"><svg class="md-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H3V4h18v12z"/></svg></button>
+        <button class="refresh-btn" id="refreshBtn"><svg class="md-icon md-icon-sm" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> 探测站点</button>
+    </div>
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-bar"><div class="progress-fill" id="probeProgressFill"></div></div>
+        <div class="progress-text" id="progressText">0 / 0</div>
+    </div>
+    <div id="categories"></div>
+    <div class="footer-note"><svg class="md-icon md-icon-xs" viewBox="0 0 24 24" fill="currentColor"><path d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.05-.08.07-.12C8.48 10.94 10.42 7.54 13 3h1l-1 7h3.5c.49 0 .56.33.47.51l-.07.15C12.96 17.55 11 21 11 21z"/></svg> 探测结果仅供参考</div>
+</div>
+
+<!-- 灵动岛 -->
+<div class="music-island slide-up" id="musicIsland" style="display: none;">
+    <div class="music-island-inner">
+        <div class="music-island-icon"><svg class="md-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div>
+        <div class="music-island-info">
+            <div class="music-island-title">网易云音乐</div>
+            <div class="music-island-song" id="islandSong">未播放</div>
+        </div>
+    </div>
+</div>
+
+<!-- 播放器窗口 -->
+<div class="music-overlay" id="musicOverlay">
+    <div class="music-window window-enter">
+        <div class="music-header">
+            <h3><svg class="md-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg> 音乐播放器</h3>
+            <div class="music-header-controls">
+                <button class="music-minimize" id="musicMinimize" aria-label="最小化"><svg class="md-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h12v-2H6v2z"/></svg></button>
+            </div>
+        </div>
+        <div class="music-search">
+            <div class="music-search-box">
+                <input type="text" class="music-search-input" id="searchInput" placeholder="搜索歌曲...">
+                <select class="music-quality" id="qualitySelect"><option>搜索后显示</option></select>
+                <button class="music-search-btn" id="searchBtn">搜索</button>
+            </div>
+        </div>
+        <div class="music-list" id="musicList"><div class="music-list-empty">搜索歌曲开始播放</div></div>
+        <div class="music-player">
+            <div class="music-current-info">
+                <div class="music-current-title" id="currentTitle">未选择歌曲</div>
+                <div class="music-current-artist" id="currentArtist">---</div>
+            </div>
+            <div class="music-progress">
+                <span class="music-time" id="currentTime">0:00</span>
+                <div class="music-progress-bar" id="progressBar"><div class="music-progress-fill" id="musicProgressFill"></div></div>
+                <span class="music-time" id="duration">0:00</span>
+            </div>
+            <div class="music-controls">
+                <button class="music-control-btn" id="prevBtn" aria-label="上一首"><svg class="md-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"/></svg></button>
+                <button class="music-control-btn" id="playPauseBtn" aria-label="播放/暂停"><svg class="md-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                <button class="music-control-btn" id="nextBtn" aria-label="下一首"><svg class="md-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 反馈弹窗 -->
+<div class="feedback-overlay" id="feedbackOverlay">
+    <div class="feedback-window">
+        <div class="feedback-header">
+            <h3>反馈与建议</h3>
+            <button class="feedback-close" id="feedbackCloseBtn" aria-label="关闭">
+                <svg class="md-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
+        <div class="feedback-body">
+            <div class="feedback-type-group">
+                <button class="feedback-type-btn active" data-type="other">其他</button>
+                <button class="feedback-type-btn" data-type="resource">资源分享</button>
+                <button class="feedback-type-btn" data-type="bug">Bug 反馈</button>
+                <button class="feedback-type-btn" data-type="suggestion">功能建议</button>
+                <button class="feedback-type-btn" data-type="cve">CVE/安全</button>
+            </div>
+            <input type="text" class="feedback-contact" id="feedbackContact" placeholder="联系方式（选填，QQ/邮箱/链接等）" maxlength="200">
+            <textarea class="feedback-content" id="feedbackContent" placeholder="请输入反馈内容..." maxlength="2000"></textarea>
+            <div class="feedback-hint">反馈将通过邮件发送给站长，请勿提交无关内容</div>
+            <div class="feedback-status" id="feedbackStatus"></div>
+        </div>
+        <div class="feedback-footer">
+            <button class="feedback-cancel-btn" id="feedbackCancelBtn">取消</button>
+            <button class="feedback-submit-btn" id="feedbackSubmitBtn">发送反馈</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 模块化 JS 加载顺序 ===== -->
+<script src="shared/js/icons.js?v=md3-8"></script>
+<script src="shared/js/config.js?v=md3-8"></script>
+<script src="shared/js/sites.js?v=md3-8"></script>
+<script src="shared/js/probe.js?v=md3-8"></script>
+<script src="mobile/js/sidebar.js?v=md3-8"></script>
+<script src="shared/js/music.js?v=md3-8"></script>
+<script src="shared/js/feedback.js?v=md3-8"></script>
+<script src="shared/js/nav-transition.js?v=md3-8"></script>
+<!-- 桌面端菊花链导航初始化 + 主入口 -->
+<script src="desktop/js/desktop-nav.js?v=md3-9"></script>
+<script src="shared/js/main.js?v=md3-8"></script>
+</body>
+</html>

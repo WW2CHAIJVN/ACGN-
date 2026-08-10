@@ -1,0 +1,330 @@
+/* ========== MD3 设计令牌:晴空蓝 + 雪雾白 ==========
+   全站配色基础层。所有颜色集中在此,改一处全站生效。
+   遵循 Material Design 3 (Material You) 明色主题规范。
+
+   ⚠️ 两套变量体系并存:
+   1. --md-*           供本项目手写 CSS 消费(十六进制)
+   2. --mdui-color-*   供 mdui 组件库消费(RGB 逗号分隔数值,因 mdui 内部用 rgb(var(...)) 包裹)
+      必须覆盖 -light 后缀的源变量(mdui 通过它映射到无后缀变量)
+*/
+
+:root {
+    /* ========================================================
+       一、本项目专用变量(十六进制,供手写 CSS 用)
+       ======================================================== */
+
+    /* ---- 主色 Primary(晴空蓝深调,保证 WCAG AA 对比度) ---- */
+    --md-primary: #0B57D0;
+    --md-on-primary: #FFFFFF;
+    --md-primary-container: #D7E3FF;
+    --md-on-primary-container: #001A41;
+
+    /* ---- 次级色 Secondary ---- */
+    --md-secondary: #565F71;
+    --md-on-secondary: #FFFFFF;
+    --md-secondary-container: #DAE2F9;
+    --md-on-secondary-container: #131C2B;
+
+    /* ---- 第三色 Tertiary(点缀) ---- */
+    --md-tertiary: #705574;
+    --md-tertiary-container: #FAD8FC;
+
+    /* ---- 表面 Surface(雪雾白体系) ---- */
+    --md-surface: #F8FBFF;            /* 页面底色:雪雾白 */
+    --md-surface-dim: #DAD9E0;
+    --md-surface-bright: #F8FBFF;
+    --md-surface-container-lowest: #FFFFFF;
+    --md-surface-container-low: #F2F3FA;
+    --md-surface-container: #ECEEF6;   /* 卡片常用背景 */
+    --md-surface-container-high: #E6E8F0;
+    --md-surface-container-highest: #E1E2EC;
+    --md-surface-variant: #E1E2EC;
+    --md-on-surface: #1A1C1E;         /* 主文字 */
+    --md-on-surface-variant: #44474F; /* 次文字 */
+
+    /* ---- 轮廓 ---- */
+    --md-outline: #74777F;
+    --md-outline-variant: #C4C6D0;
+
+    /* ---- 晴空蓝主题点缀(非 MD3 标准 token,项目专用) ---- */
+    --sky-blue: #4A9FE8;              /* 渐变起点、图标、hover */
+    --sky-blue-light: #7DBDF5;        /* 渐变中段 */
+    --snow-white: #FAFCFE;            /* 卡片悬浮面 */
+    --sky-gradient: linear-gradient(135deg, #4A9FE8 0%, #7DBDF5 100%);
+
+    /* ---- 语义色(MD3 色板) ---- */
+    --md-success: #2E7D32;
+    --md-success-container: #B8F5C8;
+    --md-on-success-container: #002106;
+    --md-error: #BA1A1A;
+    --md-error-container: #FFDAD6;
+    --md-on-error-container: #410002;
+    --md-warning: #B07000;
+    --md-warning-container: #FFDFA6;
+    --md-on-warning-container: #2A1700;
+
+    /* ---- MD3 圆角令牌 ---- */
+    --md-shape-xs: 4px;
+    --md-shape-sm: 8px;
+    --md-shape-md: 12px;
+    --md-shape-lg: 16px;
+    --md-shape-xl: 28px;
+    --md-shape-full: 9999px;
+
+    /* ---- MD3 海拔阴影(Elevation) ---- */
+    --md-elevation-1: 0 1px 2px rgba(11, 87, 208, 0.06), 0 1px 3px rgba(11, 87, 208, 0.08);
+    --md-elevation-2: 0 1px 2px rgba(11, 87, 208, 0.08), 0 2px 6px rgba(11, 87, 208, 0.10);
+    --md-elevation-3: 0 4px 8px rgba(11, 87, 208, 0.10), 0 1px 3px rgba(11, 87, 208, 0.12);
+
+    /* ---- MD3 动效曲线 ---- */
+    --md-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+    --md-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+    --md-duration-short: 150ms;
+    --md-duration-medium: 250ms;
+    --md-duration-long: 400ms;
+
+    color-scheme: light;
+
+    /* ========================================================
+       二、mdui 组件库变量覆盖(RGB 数值格式)
+       必须用逗号分隔的 RGB 数值,因 mdui 内部消费形如 rgb(var(--mdui-color-primary))
+       覆盖 -light 后缀的源变量;mdui 在明色主题下会把它映射到无后缀变量
+       ======================================================== */
+
+        /* Primary - 晴空蓝 */
+        --mdui-color-primary-light: 11, 87, 208;              /* #0B57D0 */
+        --mdui-color-on-primary-light: 255, 255, 255;
+        --mdui-color-primary-container-light: 215, 227, 255;  /* #D7E3FF */
+        --mdui-color-on-primary-container-light: 0, 26, 65;   /* #001A41 */
+
+        /* Secondary */
+        --mdui-color-secondary-light: 86, 95, 113;            /* #565F71 */
+        --mdui-color-on-secondary-light: 255, 255, 255;
+        --mdui-color-secondary-container-light: 218, 226, 249;/* #DAE2F9 */
+        --mdui-color-on-secondary-container-light: 19, 28, 43;/* #131C2B */
+
+        /* Tertiary */
+        --mdui-color-tertiary-light: 112, 85, 116;            /* #705574 */
+        --mdui-color-tertiary-container-light: 250, 216, 252;/* #FAD8FC */
+        --mdui-color-on-tertiary-container-light: 56, 29, 60;
+
+        /* Surface - 雪雾白体系 */
+        --mdui-color-surface-light: 248, 251, 255;            /* #F8FBFF */
+        --mdui-color-surface-dim-light: 218, 217, 224;        /* #DAD9E0 */
+        --mdui-color-surface-bright-light: 248, 251, 255;
+        --mdui-color-surface-container-lowest-light: 255, 255, 255;
+        --mdui-color-surface-container-low-light: 242, 243, 250;   /* #F2F3FA */
+        --mdui-color-surface-container-light: 236, 238, 246;  /* #ECEEF6 */
+        --mdui-color-surface-container-high-light: 230, 232, 240; /* #E6E8F0 */
+        --mdui-color-surface-container-highest-light: 225, 226, 236; /* #E1E2EC */
+        --mdui-color-surface-variant-light: 225, 226, 236;    /* #E1E2EC */
+        --mdui-color-on-surface-light: 26, 28, 30;            /* #1A1C1E */
+        --mdui-color-on-surface-variant-light: 68, 71, 79;    /* #44474F */
+
+        /* Background(与 surface 一致,雪雾白) */
+        --mdui-color-background-light: 248, 251, 255;         /* #F8FBFF */
+        --mdui-color-on-background-light: 26, 28, 30;
+
+        /* Outline */
+        --mdui-color-outline-light: 116, 119, 127;            /* #74777F */
+        --mdui-color-outline-variant-light: 196, 198, 208;    /* #C4C6D0 */
+
+        /* Error */
+        --mdui-color-error-light: 186, 26, 26;                /* #BA1A1A */
+        --mdui-color-on-error-light: 255, 255, 255;
+        --mdui-color-error-container-light: 255, 218, 214;    /* #FFDAD6 */
+        --mdui-color-on-error-container-light: 65, 0, 2;
+
+        /* Inverse */
+        --mdui-color-inverse-surface-light: 47, 48, 51;
+        --mdui-color-inverse-on-surface-light: 243, 239, 244;
+        --mdui-color-inverse-primary-light: 73, 159, 232;     /* #4A9FE8 反相 */
+
+        /* 其他 */
+        --mdui-color-surface-tint-color-light: 11, 87, 208;
+        --mdui-color-scrim-light: 0, 0, 0;
+        --mdui-color-shadow-light: 0, 0, 0;
+    }
+
+    /* ========================================================
+       三、暗色主题令牌(晴空蓝暗色版)
+       深蓝黑底 + 提亮的晴空蓝。激活方式:<html class="mdui-theme-dark">
+       MD3 暗色规范:主色提亮、背景变深分级、对比度达 AA
+       ======================================================== */
+    :root,
+    .mdui-theme-dark {
+        /* 本项目 --md-* 暗色变量 */
+        --md-primary: #A8C7FF;                  /* 晴空蓝提亮版(暗色模式主色) */
+        --md-on-primary: #062E6F;
+        --md-primary-container: #27477D;
+        --md-on-primary-container: #D7E3FF;
+
+        --md-secondary: #BBC7DB;
+        --md-on-secondary: #253140;
+        --md-secondary-container: #3B4858;
+        --md-on-secondary-container: #D7E3F9;
+
+        --md-tertiary: #D6BEE4;
+        --md-tertiary-container: #3D2940;
+
+        /* Surface - 深蓝黑分级体系 */
+        --md-surface: #11131A;                  /* 页面底色:深蓝黑 */
+        --md-surface-dim: #11131A;
+        --md-surface-bright: #37393F;
+        --md-surface-container-lowest: #0C0E14;
+        --md-surface-container-low: #191C23;
+        --md-surface-container: #1D2027;        /* 卡片常用背景 */
+        --md-surface-container-high: #282B32;
+        --md-surface-container-highest: #33363D;
+        --md-surface-variant: #44474F;
+        --md-on-surface: #E3E2EA;              /* 主文字 */
+        --md-on-surface-variant: #C4C6D0;      /* 次文字 */
+
+        --md-outline: #8E9099;
+        --md-outline-variant: #44474F;
+
+        /* 晴空蓝点缀(暗色版) */
+        --sky-blue: #A8C7FF;
+        --sky-blue-light: #7DBDF5;
+        --snow-white: #191C23;
+        --sky-gradient: linear-gradient(135deg, #A8C7FF 0%, #7DBDF5 100%);
+
+        /* 语义色(暗色版,提亮) */
+        --md-success: #8BDA8E;
+        --md-success-container: #1B3D1F;
+        --md-on-success-container: #A8F5B0;
+        --md-error: #FFB4AB;
+        --md-error-container: #5C1A1A;
+        --md-on-error-container: #FFDAD6;
+        --md-warning: #FFCC6B;
+        --md-warning-container: #4A3500;
+        --md-on-warning-container: #FFDFA6;
+
+        /* 暗色阴影更深 */
+        --md-elevation-1: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.6);
+        --md-elevation-2: 0 2px 6px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.6);
+        --md-elevation-3: 0 4px 12px rgba(0, 0, 0, 0.6), 0 1px 4px rgba(0, 0, 0, 0.6);
+
+        /* mdui 组件库暗色变量覆盖 */
+        --mdui-color-primary-dark: 168, 199, 255;            /* #A8C7FF */
+        --mdui-color-on-primary-dark: 6, 46, 111;            /* #062E6F */
+        --mdui-color-primary-container-dark: 39, 71, 125;    /* #27477D */
+        --mdui-color-on-primary-container-dark: 215, 227, 255;
+
+        --mdui-color-secondary-dark: 187, 199, 219;
+        --mdui-color-on-secondary-dark: 37, 49, 64;
+        --mdui-color-secondary-container-dark: 59, 72, 88;
+        --mdui-color-on-secondary-container-dark: 215, 227, 249;
+
+        --mdui-color-tertiary-dark: 214, 190, 228;
+        --mdui-color-tertiary-container-dark: 61, 41, 64;
+        --mdui-color-on-tertiary-container-dark: 250, 216, 252;
+
+        --mdui-color-surface-dark: 17, 19, 26;               /* #11131A */
+        --mdui-color-surface-dim-dark: 17, 19, 26;
+        --mdui-color-surface-bright-dark: 55, 57, 63;
+        --mdui-color-surface-container-lowest-dark: 12, 14, 20;
+        --mdui-color-surface-container-low-dark: 25, 28, 35;
+        --mdui-color-surface-container-dark: 29, 32, 39;     /* #1D2027 */
+        --mdui-color-surface-container-high-dark: 40, 43, 50;
+        --mdui-color-surface-container-highest-dark: 51, 54, 61;
+        --mdui-color-surface-variant-dark: 68, 71, 79;
+        --mdui-color-on-surface-dark: 227, 226, 234;         /* #E3E2EA */
+        --mdui-color-on-surface-variant-dark: 196, 198, 208;
+
+        --mdui-color-background-dark: 17, 19, 26;
+        --mdui-color-on-background-dark: 227, 226, 234;
+
+        --mdui-color-outline-dark: 142, 144, 153;
+        --mdui-color-outline-variant-dark: 68, 71, 79;
+
+        --mdui-color-error-dark: 255, 180, 171;
+        --mdui-color-on-error-dark: 105, 0, 5;
+        --mdui-color-error-container-dark: 147, 26, 26;
+        --mdui-color-on-error-container-dark: 255, 218, 214;
+
+        --mdui-color-inverse-surface-dark: 227, 226, 234;
+        --mdui-color-inverse-on-surface-dark: 29, 32, 39;
+        --mdui-color-inverse-primary-dark: 11, 87, 208;
+
+        --mdui-color-surface-tint-color-dark: 168, 199, 255;
+        --mdui-color-scrim-dark: 0, 0, 0;
+        --mdui-color-shadow-dark: 0, 0, 0;
+    }
+
+    /* 自动模式:跟随系统暗色偏好时,应用暗色令牌
+       mdui-theme-auto 会自动处理 mdui 变量;这里同步 --md-* */
+    @media (prefers-color-scheme: dark) {
+        .mdui-theme-auto {
+            --md-primary: #A8C7FF;
+            --md-on-primary: #062E6F;
+            --md-primary-container: #27477D;
+            --md-on-primary-container: #D7E3FF;
+            --md-secondary: #BBC7DB;
+            --md-secondary-container: #3B4858;
+            --md-surface: #11131A;
+            --md-surface-dim: #11131A;
+            --md-surface-bright: #37393F;
+            --md-surface-container-lowest: #0C0E14;
+            --md-surface-container-low: #191C23;
+            --md-surface-container: #1D2027;
+            --md-surface-container-high: #282B32;
+            --md-surface-container-highest: #33363D;
+            --md-surface-variant: #44474F;
+            --md-on-surface: #E3E2EA;
+            --md-on-surface-variant: #C4C6D0;
+            --md-outline: #8E9099;
+            --md-outline-variant: #44474F;
+            --sky-blue: #A8C7FF;
+            --sky-blue-light: #7DBDF5;
+            --snow-white: #191C23;
+            --sky-gradient: linear-gradient(135deg, #A8C7FF 0%, #7DBDF5 100%);
+            --md-success: #8BDA8E;
+            --md-success-container: #1B3D1F;
+            --md-on-success-container: #A8F5B0;
+            --md-error: #FFB4AB;
+            --md-error-container: #5C1A1A;
+            --md-on-error-container: #FFDAD6;
+            --md-warning: #FFCC6B;
+            --md-warning-container: #4A3500;
+            --md-on-warning-container: #FFDFA6;
+            --md-elevation-1: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.6);
+            --md-elevation-2: 0 2px 6px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.6);
+            --md-elevation-3: 0 4px 12px rgba(0, 0, 0, 0.6), 0 1px 4px rgba(0, 0, 0, 0.6);
+        }
+    }
+
+/* ---- MD3 state-layer 交互工具类 ----
+   hover/active 时叠加半透明色层,所有可点击元素统一这套交互 */
+.state-layer {
+    position: relative;
+    overflow: hidden;
+}
+.state-layer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--md-duration-short) var(--md-easing-standard);
+    pointer-events: none;
+    border-radius: inherit;
+}
+.state-layer:hover::after { opacity: 0.08; }
+.state-layer:active::after { opacity: 0.12; }
+
+/* ---- MD3 图标(.md-icon 通用样式) ----
+   内联 SVG,fill=currentColor 自动跟随文字色(适配亮/暗主题)。
+   尺寸通过 width/height 控制,默认 24px(标准 MD3 图标尺寸)。 */
+.md-icon {
+    width: 1em;
+    height: 1em;
+    font-size: 24px;
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+    fill: currentColor;
+}
+/* 图标尺寸变体:用于按钮内/小字号的图标 */
+.md-icon.md-icon-sm { font-size: 18px; }
+.md-icon.md-icon-xs { font-size: 14px; }

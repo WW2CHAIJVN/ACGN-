@@ -1,0 +1,327 @@
+/* ========== 音乐播放器(Material Design 3 风格) ==========
+   配色令牌见 theme.css。保留原有 class 名以兼容 JS 依赖。 */
+
+/* ---- 灵动岛(MD3 药丸形悬浮元素) ---- */
+.music-island {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    cursor: pointer;
+    transition: all var(--md-duration-medium) var(--md-easing-emphasized);
+}
+
+.music-island-inner {
+    background: var(--md-surface-container-high);
+    backdrop-filter: blur(20px);
+    border-radius: var(--md-shape-xl);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--md-outline-variant);
+    box-shadow: var(--md-elevation-2);
+}
+
+.music-island-icon {
+    font-size: 20px;
+    color: var(--md-primary);
+}
+
+.music-island-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.music-island-title {
+    font-size: 11px;
+    color: var(--md-on-surface-variant);
+}
+
+.music-island-song {
+    font-size: 12px;
+    color: var(--md-on-surface);
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ---- 播放器窗口(MD3 Dialog) ---- */
+.music-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--md-duration-medium) var(--md-easing-emphasized);
+}
+
+.music-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.music-window {
+    width: 90%;
+    max-width: 500px;
+    height: 70vh;
+    max-height: 600px;
+    background: var(--md-surface-container-high);
+    border-radius: var(--md-shape-xl);
+    border: 1px solid var(--md-outline-variant);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform var(--md-duration-medium) var(--md-easing-emphasized);
+    box-shadow: var(--md-elevation-3);
+}
+
+.music-overlay.active .music-window {
+    transform: scale(1);
+}
+
+.music-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--md-outline-variant);
+}
+
+.music-header h3 {
+    margin: 0;
+    color: var(--md-primary);
+    font-size: 1.125rem;
+    font-weight: 400;
+}
+
+/* MD3 IconButton */
+.music-minimize {
+    background: transparent;
+    border: none;
+    color: var(--md-on-surface-variant);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--md-shape-full);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--md-duration-short) var(--md-easing-standard);
+}
+
+.music-minimize:hover {
+    background: var(--md-surface-container-highest);
+}
+
+.music-search {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--md-outline-variant);
+}
+
+.music-search-box {
+    display: flex;
+    gap: 8px;
+}
+
+/* MD3 Outlined Text Field */
+.music-search-input {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: var(--md-shape-sm);
+    border: 1px solid var(--md-outline);
+    background: var(--md-surface-container-lowest);
+    color: var(--md-on-surface);
+    font-size: 0.9rem;
+    transition: border-color var(--md-duration-short) var(--md-easing-standard);
+}
+
+.music-search-input:focus {
+    outline: none;
+    border-color: var(--md-primary);
+    border-width: 2px;
+}
+
+.music-quality {
+    padding: 10px 14px;
+    border-radius: var(--md-shape-sm);
+    background: var(--md-surface-container-lowest);
+    color: var(--md-on-surface);
+    border: 1px solid var(--md-outline);
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+/* MD3 Filled Button */
+.music-search-btn {
+    padding: 0 20px;
+    border-radius: var(--md-shape-full);
+    border: none;
+    background: var(--md-primary);
+    color: var(--md-on-primary);
+    cursor: pointer;
+    font-weight: 500;
+    height: 40px;
+    transition: box-shadow var(--md-duration-short) var(--md-easing-standard);
+}
+
+.music-search-btn:hover {
+    box-shadow: var(--md-elevation-1);
+}
+
+.music-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 16px;
+}
+
+/* MD3 List Item */
+.music-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 12px;
+    border-radius: var(--md-shape-sm);
+    cursor: pointer;
+    transition: background var(--md-duration-short) var(--md-easing-standard);
+}
+
+.music-list-item:hover {
+    background: color-mix(in srgb, var(--md-primary) 8%, transparent);
+}
+
+.music-list-name {
+    font-size: 0.9rem;
+    color: var(--md-on-surface);
+    font-weight: 500;
+}
+
+.music-list-artist {
+    font-size: 0.75rem;
+    color: var(--md-on-surface-variant);
+    margin-top: 2px;
+}
+
+.music-list-duration {
+    font-size: 0.75rem;
+    color: var(--md-on-surface-variant);
+}
+
+/* 音乐列表空状态占位 */
+.music-list-empty {
+    text-align: center;
+    padding: 24px;
+    color: var(--md-on-surface-variant);
+    font-size: 0.9rem;
+}
+
+.music-player {
+    padding: 16px 24px;
+    border-top: 1px solid var(--md-outline-variant);
+}
+
+.music-current-info {
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.music-current-title {
+    font-size: 0.95rem;
+    color: var(--md-on-surface);
+    font-weight: 500;
+}
+
+.music-current-artist {
+    font-size: 0.75rem;
+    color: var(--md-on-surface-variant);
+    margin-top: 2px;
+}
+
+.music-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.music-progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--md-surface-container-highest);
+    border-radius: var(--md-shape-full);
+    cursor: pointer;
+}
+
+.music-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--md-primary);
+    border-radius: var(--md-shape-full);
+    transition: width 0.1s linear;
+}
+
+.music-time {
+    font-size: 0.7rem;
+    color: var(--md-on-surface-variant);
+    min-width: 32px;
+    text-align: center;
+}
+
+.music-controls {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    align-items: center;
+}
+
+/* MD3 IconButton */
+.music-control-btn {
+    background: transparent;
+    border: none;
+    color: var(--md-on-surface);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--md-shape-full);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--md-duration-short) var(--md-easing-standard);
+}
+
+.music-control-btn:hover {
+    background: var(--md-surface-container-highest);
+}
+
+/* 播放按钮特殊样式(更醒目) */
+#playPauseBtn {
+    background: var(--md-primary);
+    color: var(--md-on-primary);
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+}
+
+#playPauseBtn:hover {
+    background: var(--md-primary);
+    box-shadow: var(--md-elevation-2);
+}
+
+@media (max-width: 640px) {
+    .music-window {
+        width: 95%;
+        height: 80vh;
+    }
+}

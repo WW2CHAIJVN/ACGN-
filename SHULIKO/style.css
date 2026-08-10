@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <title>声库下载</title>
+
+    <!-- 导航站主题变量（MD3风格） -->
+    <style>
+        /* ========== CSS Variables (MD3 设计令牌) ========== */
+        :root {
+            /* 颜色 - 亮色 */
+            --md-sys-color-primary: #1a73e8;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #d2e3ff;
+            --md-sys-color-on-primary-container: #001d35;
+            --md-sys-color-surface: #f8f9fa;
+            --md-sys-color-surface-container: #ffffff;
+            --md-sys-color-surface-container-high: #f1f3f4;
+            --md-sys-color-on-surface: #1e1e1e;
+            --md-sys-color-on-surface-variant: #444746;
+            --md-sys-color-outline: #747775;
+            --md-sys-color-outline-variant: #c4c7c5;
+            --md-sys-color-shadow: rgba(0,0,0,0.12);
+            --md-sys-color-shadow-heavy: rgba(0,0,0,0.2);
+            --md-sys-color-surface-tint: #1a73e8;
+            --md-sys-color-scrim: rgba(0,0,0,0.4);
+            /* 背景 */
+            --md-bg: #f0f2f5;
+            --md-card-bg: #ffffff;
+            --md-card-border: #e8eaed;
+            /* 文本 */
+            --md-text-primary: #1e1e1e;
+            --md-text-secondary: #444746;
+            --md-text-muted: #747775;
+            /* 链接 */
+            --md-link-color: #1a73e8;
+            --md-link-hover: #1557b0;
+            /* 按钮 */
+            --md-btn-bg: #1a73e8;
+            --md-btn-text: #ffffff;
+            --md-btn-hover: #1557b0;
+            /* 下载链接 */
+            --download-link-bg: #e8f0fe;
+            --download-link-text: #1a73e8;
+            --download-link-hover-bg: #d2e3ff;
+            /* 侧边栏 */
+            --sidebar-bg: #ffffff;
+            --sidebar-border: #e8eaed;
+            --sidebar-item-hover: #f1f3f4;
+            --sidebar-item-active: #d2e3ff;
+            /* 搜索框 */
+            --search-bg: #f1f3f4;
+            --search-text: #1e1e1e;
+            --search-placeholder: #747775;
+            /* 图片边框 */
+            --img-border: #e8eaed;
+            /* 滚动条 */
+            --scrollbar-track: #f1f3f4;
+            --scrollbar-thumb: #c4c7c5;
+            --scrollbar-thumb-hover: #a8abaa;
+        }
+
+        /* 暗色主题 */
+        [data-theme="dark"] {
+            --md-sys-color-primary: #8ab4f8;
+            --md-sys-color-on-primary: #001d35;
+            --md-sys-color-primary-container: #1a3a5c;
+            --md-sys-color-on-primary-container: #d2e3ff;
+            --md-sys-color-surface: #1a1a1a;
+            --md-sys-color-surface-container: #252525;
+            --md-sys-color-surface-container-high: #303030;
+            --md-sys-color-on-surface: #e3e3e3;
+            --md-sys-color-on-surface-variant: #c4c7c5;
+            --md-sys-color-outline: #8e918f;
+            --md-sys-color-outline-variant: #444746;
+            --md-sys-color-shadow: rgba(0,0,0,0.3);
+            --md-sys-color-shadow-heavy: rgba(0,0,0,0.5);
+            --md-bg: #121212;
+            --md-card-bg: #252525;
+            --md-card-border: #3a3a3a;
+            --md-text-primary: #e3e3e3;
+            --md-text-secondary: #c4c7c5;
+            --md-text-muted: #8e918f;
+            --md-link-color: #8ab4f8;
+            --md-link-hover: #a8c8fa;
+            --md-btn-bg: #8ab4f8;
+            --md-btn-text: #001d35;
+            --md-btn-hover: #6a9ae0;
+            --download-link-bg: #1a3a5c;
+            --download-link-text: #8ab4f8;
+            --download-link-hover-bg: #1a4a7c;
+            --sidebar-bg: #252525;
+            --sidebar-border: #3a3a3a;
+            --sidebar-item-hover: #303030;
+            --sidebar-item-active: #1a3a5c;
+            --search-bg: #303030;
+            --search-text: #e3e3e3;
+            --search-placeholder: #8e918f;
+            --img-border: #3a3a3a;
+            --scrollbar-track: #303030;
+            --scrollbar-thumb: #555;
+            --scrollbar-thumb-hover: #777;
+        }
+
+        /* ========== 全局重置 ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: var(--md-bg);
+            color: var(--md-text-primary);
+            display: flex;
+            min-height: 100vh;
+            transition: background 0.25s ease, color 0.25s ease;
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* ========== 侧边栏 ========== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            overflow-y: auto;
+            padding: 20px 16px;
+            z-index: 100;
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1), background 0.25s ease, border-color 0.25s ease;
+            transform: translateX(0);
+        }
+
+        .sidebar h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--md-text-primary);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--sidebar-border);
+            letter-spacing: 0.3px;
+        }
+
+        .sidebar-search {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 28px;
+            border: none;
+            background: var(--search-bg);
+            color: var(--search-text);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            outline: none;
+            transition: background 0.2s ease, box-shadow 0.2s ease;
+            font-family: inherit;
+        }
+
+        .sidebar-search::placeholder {
+            color: var(--search-placeholder);
+        }
+
+        .sidebar-search:focus {
+            box-shadow: 0 0 0 2px var(--md-sys-color-primary);
+            background: var(--md-card-bg);
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 2px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: var(--md-text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.15s ease;
+            word-break: break-word;
+        }
+
+        .sidebar a:hover {
+            background: var(--sidebar-item-hover);
+            color: var(--md-text-primary);
+        }
+
+        .sidebar a.active {
+            background: var(--sidebar-item-active);
+            color: var(--md-sys-color-primary);
+            font-weight: 500;
+        }
+
+        /* ========== 主内容区 ========== */
+        .content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 40px 48px 60px;
+            max-width: 1100px;
+            transition: margin-left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1), padding 0.3s ease;
+        }
+
+        .content h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--md-text-primary);
+            margin: 0 0 8px 0;
+            letter-spacing: -0.3px;
+        }
+
+        .content h1:not(:first-of-type) {
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 1px solid var(--md-card-border);
+        }
+
+        /* ========== Section 卡片 ========== */
+        section {
+            background: var(--md-card-bg);
+            border-radius: 16px;
+            padding: 24px 28px;
+            margin: 24px 0;
+            box-shadow: 0 1px 3px var(--md-sys-color-shadow);
+            border: 1px solid var(--md-card-border);
+            transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        section:hover {
+            box-shadow: 0 4px 12px var(--md-sys-color-shadow-heavy);
+        }
+
+        section h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--md-text-primary);
+            margin: 0 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--md-sys-color-primary-container);
+        }
+
+        section p {
+            color: var(--md-text-secondary);
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        section img {
+            display: block;
+            margin: 16px 0 0 0;
+            border-radius: 10px;
+            border: 1px solid var(--img-border);
+            max-width: 100%;
+            height: auto;
+            background: var(--md-bg);
+            transition: border-color 0.25s ease, background 0.25s ease;
+            box-shadow: 0 1px 4px var(--md-sys-color-shadow);
+        }
+
+        /* ========== 下载链接（按钮风格） ========== */
+        .download-link {
+            display: inline-block;
+            background: var(--download-link-bg);
+            color: var(--download-link-text);
+            padding: 10px 20px;
+            border-radius: 24px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin: 6px 8px 6px 0;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            font-family: inherit;
+        }
+
+        .download-link:hover {
+            background: var(--download-link-hover-bg);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px var(--md-sys-color-shadow-heavy);
+        }
+
+        .download-link:active {
+            transform: translateY(0);
+        }
+
+        /* ========== 主题切换按钮 ========== */
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 20px;
+            z-index: 50;
+            background: var(--md-card-bg);
+            color: var(--md-text-primary);
+            border: 1px solid var(--md-card-border);
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            box-shadow: 0 1px 4px var(--md-sys-color-shadow);
+            backdrop-filter: blur(8px);
+            background: rgba(var(--md-card-bg-rgb, 255,255,255), 0.85);
+        }
+
+        .theme-toggle:hover {
+            box-shadow: 0 2px 12px var(--md-sys-color-shadow-heavy);
+            transform: scale(1.02);
+        }
+
+        /* ========== 移动端菜单按钮 ========== */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 150;
+            background: var(--md-card-bg);
+            color: var(--md-text-primary);
+            border: 1px solid var(--md-card-border);
+            padding: 8px 14px;
+            border-radius: 24px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            box-shadow: 0 1px 4px var(--md-sys-color-shadow);
+            backdrop-filter: blur(8px);
+            background: rgba(var(--md-card-bg-rgb, 255,255,255), 0.85);
+        }
+
+        .menu-toggle:hover {
+            box-shadow: 0 2px 8px var(--md-sys-color-shadow-heavy);
+        }
+
+        /* ========== 底部致谢区域 ========== */
+        .content > h1:last-of-type {
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 1px solid var(--md-card-border);
+        }
+
+        .content > h1:last-of-type + div {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px 40px;
+            align-items: center;
+            margin-top: 16px;
+            padding: 20px 0 10px 0;
+        }
+
+        .content > h1:last-of-type + div a {
+            display: inline-block;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .content > h1:last-of-type + div a:hover {
+            transform: scale(1.05);
+            opacity: 0.85;
+        }
+
+        .content > h1:last-of-type + div img {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+            border-radius: 8px;
+        }
+
+        /* ========== 声明区特殊样式 ========== */
+        #section-intro {
+            border-left: 4px solid var(--md-sys-color-primary);
+        }
+
+        #section-intro h2 {
+            border-bottom-color: var(--md-sys-color-primary);
+        }
+
+        /* ========== 滚动条美化 ========== */
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 2px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover);
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 85%;
+                max-width: 320px;
+                box-shadow: 2px 0 20px var(--md-sys-color-shadow-heavy);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .content {
+                margin-left: 0;
+                padding: 72px 16px 40px;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .theme-toggle {
+                top: 16px;
+                right: 16px;
+                padding: 6px 12px;
+                font-size: 0.7rem;
+            }
+
+            section {
+                padding: 18px 16px;
+                margin: 16px 0;
+            }
+
+            section h2 {
+                font-size: 1.1rem;
+            }
+
+            .content h1 {
+                font-size: 1.5rem;
+            }
+
+            .download-link {
+                display: block;
+                margin: 6px 0;
+                text-align: center;
+                font-size: 0.85rem;
+                padding: 12px 16px;
+            }
+
+            .content > h1:last-of-type + div {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .content > h1:last-of-type + div img {
+                width: 64px !important;
+                height: 64px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 64px 12px 32px;
+            }
+
+            section {
+                padding: 14px 12px;
+                border-radius: 12px;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-width: 100%;
+                padding: 16px 12px;
+            }
+
+            .sidebar a {
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+
+            .download-link {
+                font-size: 0.8rem;
+                padding: 10px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 移动端菜单按钮 -->
+    <button class="menu-toggle" onclick="toggleMenu()">☰ 目录</button>
+
+    <!-- 侧边栏目录 -->
+    <nav class="sidebar" id="sidebarNav">
+        <h2>目录导航</h2>
+        <input type="text" class="sidebar-search" id="tocSearch" placeholder="搜索标题或内容..." />
+        <ul id="toc-list">
+            <li><a href="#section-0">* VOCALOIDPatcher（汉化和更改页面）</a></li>
+            <li><a href="#section-1">A.I.Voice （2.6~2.10可破解）</a></li>
+            <li><a href="#section-2">初音未来V6EA</a></li>
+            <li><a href="#section-3">SVFlat</a></li>
+            <li><a href="#section-4">VOCALOID 6.13.0.1</a></li>
+            <li><a href="#section-5">*(可以上传到网上但需标注非法调音）Kasane Teto V4</a></li>
+            <li><a href="#section-6">歌爱雪</a></li>
+            <li><a href="#section-7">冰山青辉</a></li>
+            <li><a href="#section-8">初音未来 AI 2</a></li>
+            <li><a href="#section-9">足立零V6声库</a></li>
+        </ul>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="content">
+        <button class="theme-toggle" onclick="toggleTheme()">切换暗黑/明亮模式</button>
+
+        <h1>声库下载</h1>
+
+        <section id="section-intro">
+            <h2>声明</h2>
+            <p>本站的资源仅适合Windows 10 x64及以上系统，标题带-的可以在Windows7及以上运行</p>
+            <p>本文档的资源仅供学习使用，制作的歌曲不可以上传到网上（除了标题带*的！），失效了请找我反馈，侵权了也可以联系我删除，如果想要提供资源也可以联系我，没有您想要的资源也可以联系我，我尽量找，目前VoiSona、Synthesizer V Studio 2 Pro（SV R3）没有破解，带#的可以免费用，带!的是没破解的，部分链接来自其他网站。</p>
+            <p>请通过liudongliang201499@outlook.com或QQ 2105446647还有B站账号definelife_ldl（UID：1933170504）联系我</p>
+            <p>本站的直链下载有一些用户下载较慢，可能是Cloudflare原因，推荐使用Motrix Next进行下载</p>
+            <a href="./data/MotrixNext_3.9.6_x64-setup.exe" class="download-link" download>点击从本地下载Motrix Next</a>
+        </section>
+
+        <section id="section-0">
+            <h2>* VOCALOIDPatcher（汉化和更改页面）</h2>
+            <p>用法：替换VOCALOID安装目录下的同名文件，没有破解功能<br />功能：为 VOCALOID 6 编辑器提供更多功能的补丁</p>
+            <a href="./data/VOCALOIDPatcher-2.3.1.zip" class="download-link" download>点击从本地下载VOCALOIDPatcher</a>
+            <a href="./data/VOCALOIDPatcher-2.3.1.zip" class="download-link" download>点击从本地下载VOCALOIDPatcher（备用1）</a>
+            <a href="./data/VOCALOIDPatcher-2.3.1.zip" class="download-link" download>点击从本地下载VOCALOIDPatcher（备用2）</a>
+            <p>图片展示：</p>
+            <img src="./data/vp.png" loading="lazy" />
+        </section>
+
+        <section id="section-1">
+            <h2>A.I.Voice （2.6~2.10可破解）</h2>
+            <p>用法：替换aivoice安装目录下的同名文件。<br />文件来自reddit</p>
+            <a href="./data/AI.Framework.License.dll" class="download-link" download>点击从本地下载AI.Framework.License.dll</a>
+            <a href="./data/AIVOICE_GUMI.zip" class="download-link" download>点击从本地下载A.I.Voice2.9.1+GUMI声库的在线安装器</a>
+            <p>图片展示：</p>
+            <img src="./data/avg291.png" loading="lazy" />
+        </section>
+
+        <section id="section-2">
+            <h2>初音未来V6 EA</h2>
+            <p>用法：直接安装</p>
+            <a href="./data/Hatsune_Miku_V6_EA_6.9.0.7z" class="download-link" download>点击从本地下载初音未来V6 EA</a>
+            <p>此声库的安装程序图片</p>
+            <img src="./data/mv6.png" loading="lazy" />
+        </section>
+
+        <section id="section-3">
+            <h2>Synthesizer V Flat &amp; Flat Mananger</h2>
+            <p>用法：直接安装，如果要导入声库请双击sfpk文件，安装包会自动安装管理器和编辑器，解压密码是huakanruSM，来自gimovo.com</p>
+            <a href="./data/SV Flat.7z" class="download-link" download>点击从本地下载Synthesizer V Flat &amp; Flat Manager</a>
+            <p>管理器和编辑器图片</p>
+            <img src="./data/flat.png" loading="lazy" />
+        </section>
+
+        <section id="section-4">
+            <h2>VOCALOID 6.13.0.1</h2>
+            <p>用法：安装VOCALOID 6.13.0.1和VOCALOID 6.13.0.1 Authorization，然后替换编辑器目录下的同名文件</p>
+            <a href="./data/VOCALOID 6.13.0.1 Authorization Patch.zip" class="download-link" download>点击从本地下载破解补丁</a>
+            <a href="./data/VOCALOID6_Update_6.13.0_Win.zip" class="download-link" download>点击从本地下载没破解的正版编辑器</a>
+            <p>VOCALOID 6.13.0.1界面</p>
+            <img src="./data/v13.png" loading="lazy" />
+        </section>
+
+        <section id="section-5">
+            <h2>*（需标注非法调音）Kasane Teto V4（重音TetoV4）</h2>
+            <p>用法：解压所有文件后运行Kasane_Teto_V4.exe安装即可，适用于V5及以上编辑器</p>
+            <a href="./data/Kasane_Teto_V4.zip" class="download-link" download>点击从本地下载重音Teto V4</a>
+            <img src="./data/teto.jpg" loading="lazy" />
+        </section>
+
+        <section id="section-6">
+            <h2>歌爱雪</h2>
+            <p>用法：解压所有文件并运行Yuki_v4.exe</p>
+            <a href="./data/Kaai_Yuki.rar" class="download-link" download>点击从本地下载歌爱雪声库</a>
+            <img src="./data/yuki.webp" loading="lazy" />
+        </section>
+
+        <section id="section-7">
+            <h2>冰山青辉</h2>
+            <p>sv2用法：点击安装即可，这个sv2声库比较特殊，无法在sv2安装，但是可以在sharp和flat安装<br />v4用法：解压后运行exe即可</p>
+            <a href="./data/Kiyoteru_V4_Natural.rar" class="download-link" download>点击从本地下载普通声库</a>
+            <a href="./data/Kiyoteru_V4_Rock.rar" class="download-link" download>点击从本地下载Rock声库</a>
+            <a href="./data/teru200.svpk" class="download-link" download>点击从本地下载sv2声库（v200）</a>
+            <img src="./data/teru.webp" loading="lazy" />
+        </section>
+
+        <section id="section-8">
+            <h2>初音未来AI2 for Synthesizer V Flat</h2>
+            <p>此声库只支持SV Flat，双击文件安装，比网上流传的一代flat声库更像miku</p>
+            <a href="./data/flatmikuai2.sfpk" class="download-link" download>点击从本地下载Miku v2 Flat声库</a>
+            <img src="./data/mikuv2.png" loading="lazy" />
+        </section>
+
+        <section id="section-9">
+            <h2>足立零V6声库</h2>
+            <p>EA声库，测试版，来自Reddit</p>
+            <a href="./data/Adachi_Rei_V6_EA_for_VOCALOID_6.9.0.zip" class="download-link" download>点击从本地下载足立零V6EA（Early Acess）声库</a>
+            <img src="./data/屏幕截图(381).png" loading="lazy" />
+        </section>
+
+        <h1>感谢以下平台提供技术支持</h1>
+        <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+            <a href="https://katabump.com/" target="_blank" style="display: block;">
+                <img src="./data/favicon.png" alt="KataBump" width="128" height="128" />
+            </a>
+            <a href="https://cloudflare.com/" target="_blank" style="display: block;">
+                <img src="./data/Logo.png" alt="Cloudflare" width="128" height="128" />
+            </a>
+            <a href="https://nginx.org/" title="Nginx">
+                <img src="./data/favicon.ico" alt="Nginx" width="128" height="128" />
+            </a>
+        </div>
+    </main>
+
+    <script>
+        // 主题切换功能
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // 移动端菜单切换
+        function toggleMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('load', function() {
+            // 恢复主题设置
+            var savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+
+            // 图片自动缩放（按原图因数 4）
+            var images = document.querySelectorAll('img');
+            var factor = 4;
+            images.forEach(function(img) {
+                var naturalW = img.naturalWidth;
+                var naturalH = img.naturalHeight;
+                if (naturalW > 0) {
+                    var newW = Math.floor(naturalW / factor);
+                    var newH = Math.floor(naturalH / factor);
+                    img.style.width = newW + 'px';
+                    img.style.height = newH + 'px';
+                    img.style.maxWidth = '100%';
+                }
+            });
+        });
+
+        // 目录搜索功能
+        var tocSearch = document.getElementById('tocSearch');
+        var tocLinks = document.querySelectorAll('#toc-list li');
+        var sections = document.querySelectorAll('section');
+
+        tocSearch.addEventListener('input', function() {
+            var keyword = this.value.toLowerCase().trim();
+
+            tocLinks.forEach(function(li, index) {
+                var section = sections[index + 1];
+                if (!section) return;
+
+                var title = section.querySelector('h2')?.textContent.toLowerCase() || '';
+                var content = section.querySelector('p')?.textContent.toLowerCase() || '';
+
+                if (title.includes(keyword) || content.includes(keyword)) {
+                    li.style.display = 'block';
+                } else {
+                    li.style.display = 'none';
+                }
+            });
+        });
+
+        // 滚动高亮当前章节
+        window.addEventListener('scroll', function() {
+            var current = '';
+            sections.forEach(function(section) {
+                var sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 50) current = section.getAttribute('id');
+            });
+
+            var allLinks = document.querySelectorAll('.sidebar a');
+            allLinks.forEach(function(link) {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+            });
+        });
+
+        // Electron 下载处理（保留兼容）
+        if (window.electronAPI) {
+            document.querySelectorAll('a.download-link[download]').forEach(function(link) {
+                link.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    var href = link.getAttribute('href');
+                    await window.electronAPI.downloadFile(href);
+                });
+            });
+        }
+    </script>
+
+</body>
+</html>

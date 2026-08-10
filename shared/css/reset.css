@@ -1,0 +1,9 @@
+/* ========== 通用重置 ==========
+   所有页面共用。仅处理 box-sizing 和 tap-highlight。 */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}

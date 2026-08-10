@@ -1,0 +1,62 @@
+/* devlog.css */
+body {
+    background: #0d1117;
+    color: #c9d1d9;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 2rem;
+    color: #58a6ff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.back-link:hover {
+    color: #79c0ff;
+    transform: translateX(-2px);
+}
+
+.log-entry {
+    background: #161b22;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    border-left: 4px solid #3fb950;
+    transition: all 0.2s ease;
+}
+
+.log-entry:hover {
+    background: #1a212a;
+    transform: translateY(-1px);
+}
+
+.log-date {
+    font-size: 0.8rem;
+    color: #8b949e;
+    margin-bottom: 0.5rem;
+}
+
+.log-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #f0f6fc;
+}
+
+.log-content {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: #f0f6fc;
+}
+
+/* 页面入场动画由 transitions.css 的 .page-enter 统一管理 */

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>解压教学 / 分卷合并</title>
+    <link rel="stylesheet" href="shared/css/reset.css?v=md3-8">
+    <link rel="stylesheet" href="shared/css/pages/class.css?v=md3-8">
+    <link rel="stylesheet" href="shared/css/transitions.css?v=md3-8">
+    <link rel="stylesheet" href="desktop/css/layout.css?v=md3-9" media="screen">
+</head>
+<body>
+<div class="sub-topbar">ACGN NAVIGATION SYSTEM</div>
+<div class="sub-masthead">
+    <div class="sub-masthead-left">
+        <div class="sub-logo">ACGN</div>
+        <div class="sub-masthead-title">ACGN导航站</div>
+    </div>
+    <div class="sub-masthead-right">
+        <a href="index.html" class="sub-back-btn">← 返回首页</a>
+    </div>
+</div>
+<div class="container page-enter">
+    <div class="header">
+        <a href="index.html" class="back-home"> ← </a>
+        <div class="title-area">
+            <h1>解压教学 / 合并分卷</h1>
+            <p>效率至上 · 多平台</p>
+        </div>
+        <div class="watermark">效率至上</div>
+    </div>
+
+    <!-- 平台选择 -->
+    <div id="platformSelect">
+        <div class="platform-list" id="platformList">
+            <div class="platform-item" data-platform="android">
+                <div class="platform-info">
+                    <div class="platform-name">Android</div>
+                    <div class="platform-desc">开放、迭代、包容 · 开放共赢 (Be together, not the same)</div>
+                </div>
+                <div class="platform-dots" data-dots="android">...</div>
+            </div>
+            <div class="platform-item" data-platform="windows">
+                <div class="platform-info">
+                    <div class="platform-name">Windows</div>
+                    <div class="platform-desc">既是工具，也是家 · 以人为本 (Human-Centered)</div>
+                </div>
+                <div class="platform-dots" data-dots="windows">...</div>
+            </div>
+            <div class="platform-item" data-platform="ios">
+                <div class="platform-info">
+                    <div class="platform-name">iOS / macOS</div>
+                    <div class="platform-desc">技术与人文的交汇 · 非同凡想 (Think Different)</div>
+                </div>
+                <div class="platform-dots" data-dots="ios">...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Android 教程 -->
+    <div id="androidTut" class="tutorial">
+        <div class="tutorial-header">
+            <span>Android · 解压与分卷</span>
+            <button class="switch-device">切换设备</button>
+        </div>
+        <div class="video-block">
+            <div class="video-title">解压教学视频</div>
+            <video controls preload="none" poster="Video/android_extract_cover.jpg">
+                <source src="Video/android_extract.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="video-block">
+            <div class="video-title">分卷解压教学视频</div>
+            <div class="video-placeholder">
+                <span class="placeholder-icon">🎬</span>
+                <span class="placeholder-text">视频暂未上传</span>
+                <span class="placeholder-sub">敬请期待</span>
+            </div>
+        </div>
+        <div class="tip">
+            多种加密 / 多方法尝试：分件压缩合并 → 改后缀 .zip/.rar/.7z → 强制解压。<br>
+            哪怕文件显示为图片/视频，也可能是伪装的压缩包。
+        </div>
+        <div class="step">
+            <div class="step-item"><span class="step-num">1</span> 安装 ZArchiver 或 RAR for Android</div>
+            <div class="step-item"><span class="step-num">2</span> 找到分卷文件（.001 / .part1.rar）</div>
+            <div class="step-item"><span class="step-num">3</span> 点击第一个分卷 → 解压到当前文件夹</div>
+            <div class="step-item"><span class="step-num">4</span> 若失败 → 改后缀 + 换解压软件</div>
+        </div>
+    </div>
+
+    <!-- Windows 教程 -->
+    <div id="windowsTut" class="tutorial">
+        <div class="tutorial-header">
+            <span>Windows · 解压与分卷</span>
+            <button class="switch-device">切换设备</button>
+        </div>
+        <div class="video-block">
+            <div class="video-title">解压教学视频</div>
+            <video controls preload="none" poster="Video/win_extract_cover.jpg">
+                <source src="Video/win_extract.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="video-block">
+            <div class="video-title">合并分卷教学视频</div>
+            <div class="video-placeholder">
+                <span class="placeholder-icon">🎬</span>
+                <span class="placeholder-text">视频暂未上传</span>
+                <span class="placeholder-sub">敬请期待</span>
+            </div>
+        </div>
+        <div class="tip">
+            多种加密 / 多方法尝试：分件压缩合并 → 改后缀 → 使用 7-Zip 解压。<br>
+            常见伪装：jpg / png / mp4 → 改后缀为 .7z .zip .rar 再解压。
+        </div>
+        <div class="step">
+            <div class="step-item"><span class="step-num">1</span> 安装 7-Zip 或 WinRAR</div>
+            <div class="step-item"><span class="step-num">2</span> 选中所有分卷（.rar / .r01 / .part1）</div>
+            <div class="step-item"><span class="step-num">3</span> 右键 → 7-Zip → 提取到当前位置</div>
+            <div class="step-item"><span class="step-num">4</span> 若报错 → 强制改后缀 + 换软件</div>
+        </div>
+    </div>
+
+    <!-- iOS 专用 -->
+    <div id="iosTut" class="tutorial">
+        <div class="tutorial-header">
+            <span>iOS / macOS</span>
+            <button class="switch-device">切换设备</button>
+        </div>
+        <div class="ios-warning">
+            <p style="margin-top:20px; font-size:0.75rem; opacity:0.7;">我们暂时不对苹果公司的系统做教程，抱歉。</p>
+        </div>
+    </div>
+
+    <div class="footer">以后将陆续支持其他系统，敬请等待</div>
+</div>
+
+<!-- 弹窗 -->
+<div id="modalOverlay" class="modal-overlay">
+    <div class="modal-content window-enter">
+        <button class="modal-close" id="modalCloseBtn">✕</button>
+        <div class="modal-esc">esc</div>
+        <h3 id="modalTitle">相关</h3>
+        <div class="modal-examples" id="modalExamples"></div>
+    </div>
+</div>
+
+<script src="shared/js/nav-transition.js?v=md3-8"></script>
+<script>
+    (function() {
+        const platformDiv = document.getElementById('platformSelect');
+        const androidTut = document.getElementById('androidTut');
+        const windowsTut = document.getElementById('windowsTut');
+        const iosTut = document.getElementById('iosTut');
+        const platformItems = document.querySelectorAll('.platform-item');
+        const dotsList = document.querySelectorAll('.platform-dots');
+        const modal = document.getElementById('modalOverlay');
+        const modalClose = document.getElementById('modalCloseBtn');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalExamples = document.getElementById('modalExamples');
+
+        let currentPlatform = '';
+
+        const modalContentMap = {
+            android: {
+                title: 'Android 相关',
+                items: [
+                    { text: 'Android for China', url: 'https://www.android.com/intl/zh-cn/' },
+                    { text: 'Android Global', url: 'https://www.android.com/' },
+                    { text: 'ZArchiver (Android 解压工具)', url: 'https://zarchiver.en.uptodown.com/android' },
+                    { text: 'RAR for Android', url: 'https://www.rarlab.com/download.htm' }
+                ]
+            },
+            windows: {
+                title: 'Windows 相关',
+                items: [
+                    { text: 'Windows for China', url: 'https://www.microsoft.com/zh-cn/windows' },
+                    { text: 'Windows Global', url: 'https://www.microsoft.com/en-us/windows' },
+                    { text: '7-Zip 官方下载', url: 'https://www.7-zip.org/' },
+                    { text: 'WinRAR 官方下载', url: 'https://www.win-rar.com/download.html' }
+                ]
+            },
+            ios: {
+                title: 'iOS / macOS 相关',
+                items: [
+                    { text: 'iOS for China', url: 'https://www.apple.com.cn/' },
+                    { text: 'iOS Global', url: 'https://www.apple.com/' },
+                    { text: 'Apple 支持页面', url: 'https://support.apple.com/zh-cn' },
+                    { text: 'Keka (macOS 解压工具)', url: 'https://www.keka.io/zh-cn/' }
+                ]
+            }
+        };
+
+        function showPlatform() {
+            platformDiv.style.display = 'block';
+            androidTut.style.display = 'none';
+            windowsTut.style.display = 'none';
+            iosTut.style.display = 'none';
+        }
+
+        function showTutorial(name) {
+            platformDiv.style.display = 'none';
+            // 隐藏的 video 区域暂停播放，释放媒体资源
+            androidTut.querySelectorAll('video').forEach(v => v.pause());
+            windowsTut.querySelectorAll('video').forEach(v => v.pause());
+            androidTut.style.display = 'none';
+            windowsTut.style.display = 'none';
+            iosTut.style.display = 'none';
+            if (name === 'android') androidTut.style.display = 'block';
+            else if (name === 'windows') windowsTut.style.display = 'block';
+            else if (name === 'ios') iosTut.style.display = 'block';
+        }
+
+        let _modalTimer = null;
+
+        function closeModal() {
+            modal.classList.add('closing');
+            _modalTimer = setTimeout(() => {
+                modal.style.display = 'none';
+                modal.classList.remove('closing');
+            }, 300);
+        }
+
+        // 页面卸载时清理定时器
+        window.addEventListener('beforeunload', function() {
+            if (_modalTimer) { clearTimeout(_modalTimer); _modalTimer = null; }
+        });
+
+        function openModal(platform, clickElement) {
+            currentPlatform = platform;
+            const content = modalContentMap[platform];
+            if (!content) return;
+
+            modalTitle.innerText = content.title;
+            modalExamples.innerHTML = '';
+            content.items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'example-item';
+                div.innerText = item.text;
+                if (item.url) {
+                    div.style.cursor = 'pointer';
+                    // 判断是否需要梯子
+                    const needsProxy = /github\.com|google\.com|wordpress\.com|uptodown\.com/i.test(item.url);
+                    if (needsProxy) {
+                        div.innerHTML = item.text + ' <span style="font-size:0.65rem;color:#f2c94c;opacity:0.7;margin-left:4px;">⚠ 需梯子</span>';
+                    }
+                    div.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        window.open(item.url, '_blank');
+                    });
+                } else {
+                    div.addEventListener('click', () => {
+                        console.log(`[${currentPlatform}] 点击了: ${item.text}`);
+                    });
+                }
+                modalExamples.appendChild(div);
+            });
+
+            modal.style.display = 'flex';
+            modal.classList.remove('closing');
+            setTimeout(() => {
+                modal.classList.add('open');
+            }, 10);
+        }
+
+        platformItems.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                platformItems.forEach(i => i.classList.remove('hover-expand'));
+                item.classList.add('hover-expand');
+            });
+        });
+        document.getElementById('platformList').addEventListener('mouseleave', () => {
+            platformItems.forEach(i => i.classList.remove('hover-expand'));
+        });
+
+        platformItems.forEach(item => {
+            const infoArea = item.querySelector('.platform-info');
+            infoArea.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const platform = item.getAttribute('data-platform');
+                if (platform) showTutorial(platform);
+            });
+        });
+
+        dotsList.forEach(dots => {
+            dots.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const platform = dots.getAttribute('data-dots');
+                if (platform) openModal(platform, dots);
+            });
+        });
+
+        modalClose.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'flex') {
+                closeModal();
+            }
+        });
+
+        document.querySelectorAll('.switch-device').forEach(btn => {
+            btn.addEventListener('click', showPlatform);
+        });
+
+        showPlatform();
+    })();
+</script>
+</body>
+</html>

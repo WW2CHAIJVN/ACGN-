@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CVE 技术归档 - ACGN导航站</title>
+    <meta name="description" content="CVE 漏洞技术归档 - 自动化系统逻辑盲点研究">
+    <link rel="stylesheet" href="../shared/css/reset.css?v=md3-8">
+    <link rel="stylesheet" href="../shared/css/pages/cve-index.css?v=md3-8">
+    <link rel="stylesheet" href="../shared/css/transitions.css?v=md3-8">
+    <link rel="stylesheet" href="../desktop/css/layout.css?v=md3-9" media="screen">
+</head>
+<body>
+<div class="sub-topbar">ACGN NAVIGATION SYSTEM</div>
+<div class="sub-masthead">
+    <div class="sub-masthead-left">
+        <div class="sub-logo">ACGN</div>
+        <div class="sub-masthead-title">ACGN导航站</div>
+    </div>
+    <div class="sub-masthead-right">
+        <a href="../index.html" class="sub-back-btn">← 返回首页</a>
+    </div>
+</div>
+    <div class="page-container page-enter">
+        <div class="nav-header">
+            <a href="../index.html" class="back-link">&#x2190; 返回导航站</a>
+        </div>
+
+        <h1>CVE 技术归档</h1>
+        <p class="archive-desc">收录安全领域值得关注的技术研究，聚焦自动化系统的逻辑盲点与绕过策略。仅供学习参考。</p>
+
+        <div class="cve-grid">
+            <a href="cves/cve-2026-0866.html" class="cve-card severity-high">
+                <span class="cve-badge">CVE-2026-0866</span>
+                <h2>ZIP 格式解析漏洞</h2>
+                <div class="cve-meta">
+                    <span>2026年3月</span>
+                    <span>发现者：Chris Aziz</span>
+                </div>
+                <p class="cve-summary">一个文件，头部说"我没压缩"，身体却是压缩的。大多数扫描器信了头部，于是放行。51款杀软中50款被绕过，绕过率约98%。</p>
+                <div class="cve-tags">
+                    <span class="cve-tag anti-censorship">反审查</span>
+                    <span class="cve-tag">ZIP</span>
+                    <span class="cve-tag">文件格式</span>
+                </div>
+            </a>
+
+            <a href="cves/cve-2023-36584.html" class="cve-card severity-high">
+                <span class="cve-badge">CVE-2023-36584</span>
+                <h2>Windows MOTW 标记绕过</h2>
+                <div class="cve-meta">
+                    <span>2023年8月</span>
+                    <span>厂商：Microsoft</span>
+                </div>
+                <p class="cve-summary">从网络下载的文件本应被标记为"来自互联网"并受到限制，但通过 ZIP 内路径处理缺陷，可让文件逃脱 MOTW 标记，绕过 Office 保护模式。</p>
+                <div class="cve-tags">
+                    <span class="cve-tag anti-censorship">反审查</span>
+                    <span class="cve-tag">Windows</span>
+                    <span class="cve-tag">MOTW</span>
+                </div>
+            </a>
+
+            <a href="cves/cve-2016-3714.html" class="cve-card severity-critical">
+                <span class="cve-badge">CVE-2016-3714</span>
+                <h2>ImageTragick 命令执行</h2>
+                <div class="cve-meta">
+                    <span>2016年5月</span>
+                    <span>CVSS 10.0</span>
+                </div>
+                <p class="cve-summary">ImageMagick 图片处理库的 delegates 机制允许通过构造特殊图片文件执行任意系统命令。上传一张"图片"即可控制整个服务器。</p>
+                <div class="cve-tags">
+                    <span class="cve-tag anti-censorship">反审查</span>
+                    <span class="cve-tag">图片处理</span>
+                    <span class="cve-tag">RCE</span>
+                </div>
+            </a>
+        </div>
+
+        <footer class="footer">
+            <p>技术归档 &#183; 仅供研究参考 &#183; 自动化系统的逻辑盲点研究系列</p>
+        </footer>
+    </div>
+
+    <script src="../shared/js/nav-transition.js?v=md3-8"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.cve-card').forEach(function(card, i) {
+            card.style.setProperty('--stagger-index', i);
+            card.classList.add('item-enter');
+        });
+    });
+    </script>
+</body>
+</html>

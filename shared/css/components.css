@@ -1,0 +1,332 @@
+/* ========== 共用组件样式 ==========
+   从 index.css 中提取的跨页面共用组件。
+   不包含侧边栏(.sidebar)、body/container 基础布局。
+   配色令牌见 theme.css。保留原有 class 名以兼容 JS 依赖。 */
+
+/* ---- 顶部菜单按钮(MD3 IconButton) ---- */
+.menu-btn {
+    background: transparent;
+    border: none;
+    color: var(--md-primary);
+    width: 48px;
+    height: 48px;
+    border-radius: var(--md-shape-full);
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--md-duration-short) var(--md-easing-standard);
+    flex-shrink: 0;
+}
+
+.menu-btn:hover { background: var(--md-primary-container); }
+.menu-btn:active { background: color-mix(in srgb, var(--md-primary) 20%, transparent); }
+
+/* 主题切换按钮(MD3 IconButton,与 menu-btn 同风格) */
+.theme-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--md-primary);
+    width: 48px;
+    height: 48px;
+    border-radius: var(--md-shape-full);
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--md-duration-short) var(--md-easing-standard),
+                transform var(--md-duration-short) var(--md-easing-standard);
+    flex-shrink: 0;
+    line-height: 1;
+}
+.theme-toggle-btn:hover { background: var(--md-primary-container); }
+.theme-toggle-btn:active {
+    background: color-mix(in srgb, var(--md-primary) 20%, transparent);
+    transform: scale(0.92);
+}
+
+/* 提示区域:固定宽度,不挤压标题 */
+.alert-area {
+    flex: 1;
+    min-width: 0;
+    margin-left: 12px;
+    display: flex;
+    align-items: center;
+}
+
+/* MD3 提示信息(代替旧的彩色边框提示) */
+.alert-message {
+    background: var(--md-primary-container);
+    color: var(--md-on-primary-container);
+    padding: 8px 16px;
+    border-radius: var(--md-shape-sm);
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    animation: fadeOut 7s forwards;
+}
+
+.alert-message.error {
+    background: var(--md-error-container);
+    color: var(--md-on-error-container);
+}
+
+.alert-message.success {
+    background: var(--md-success-container);
+    color: var(--md-on-success-container);
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0; visibility: hidden; }
+}
+
+/* MD3 Filled Tonal Button */
+.refresh-btn {
+    background: var(--md-primary-container);
+    border: none;
+    color: var(--md-on-primary-container);
+    padding: 0 24px;
+    height: 44px;
+    border-radius: var(--md-shape-full);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: box-shadow var(--md-duration-short) var(--md-easing-standard),
+                background var(--md-duration-short) var(--md-easing-standard);
+    flex-shrink: 0;
+}
+
+.refresh-btn:hover {
+    box-shadow: var(--md-elevation-1);
+}
+
+.refresh-btn:active {
+    background: color-mix(in srgb, var(--md-primary-container) 85%, var(--md-primary) 15%);
+}
+
+.refresh-btn:disabled {
+    background: var(--md-surface-container-high);
+    color: var(--md-on-surface-variant);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ---- 线性进度条(MD3 Linear Progress) ---- */
+.progress-container {
+    margin-top: 12px;
+    margin-bottom: 8px;
+    display: none;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--md-surface-container-highest);
+    border-radius: var(--md-shape-full);
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--sky-gradient);
+    border-radius: var(--md-shape-full);
+    transition: width var(--md-duration-short) var(--md-easing-standard);
+}
+
+.progress-text {
+    font-size: 0.75rem;
+    color: var(--md-on-surface-variant);
+    margin-top: 8px;
+    text-align: center;
+}
+
+/* ---- 分类区(MD3 Section) ---- */
+.category {
+    margin-bottom: 32px;
+}
+
+.category-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+    padding-left: 12px;
+    border-left: 4px solid;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    color: var(--md-on-surface);
+}
+
+.direct .category-title { border-left-color: var(--md-success); }
+.proxy .category-title { border-left-color: var(--md-warning); }
+.dead .category-title { border-left-color: var(--md-error); }
+
+.category-count {
+    font-size: 0.75rem;
+    background: var(--md-surface-container-high);
+    padding: 2px 12px;
+    border-radius: var(--md-shape-full);
+    color: var(--md-on-surface-variant);
+}
+
+.link-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+@media (min-width: 640px) {
+    .link-list {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 14px;
+    }
+}
+
+/* ---- MD3 Filled Card(链接卡片) ----
+   卡片靠 state-layer(悬停叠加层)+ elevation 表达交互状态,
+   不用色条;状态通过图标容器配色与状态徽章传达。 */
+.link-card {
+    background: var(--md-surface-container);
+    border-radius: var(--md-shape-lg);     /* MD3 卡片标准圆角 */
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    color: var(--md-on-surface);
+    transition: box-shadow var(--md-duration-medium) var(--md-easing-standard),
+                background var(--md-duration-short) var(--md-easing-standard),
+                transform var(--md-duration-short) var(--md-easing-standard);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: none;
+    border: 1px solid var(--md-outline-variant);
+}
+
+/* MD3 state-layer:悬停/按下时叠加半透明色层(核心交互反馈) */
+.link-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--md-primary);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--md-duration-short) var(--md-easing-standard);
+}
+
+.link-card:hover {
+    box-shadow: var(--md-elevation-1);
+    border-color: transparent;
+}
+.link-card:hover::after { opacity: 0.08; }    /* MD3 hover state-layer 8% */
+
+.link-card:active {
+    transform: scale(0.98);
+}
+.link-card:active::after { opacity: 0.12; }   /* MD3 pressed state-layer 12% */
+
+.link-card.jumping { animation: jumpForward 0.3s ease forwards; }
+@keyframes jumpForward {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.8) translate(20px, -15px); opacity: 0; }
+}
+
+/* 图标容器:用 primary-container 品牌色,呼应晴空蓝 */
+.link-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--md-primary-container);
+    color: var(--md-on-primary-container);
+    border-radius: var(--md-shape-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 22px;
+    position: relative;
+    z-index: 1;
+}
+
+.link-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--md-shape-md);
+}
+/* 站点图标容器内的 SVG 占位图标尺寸 */
+.link-icon .md-icon { font-size: 22px; }
+
+.link-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: relative;
+    z-index: 1;
+}
+.link-name {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--md-on-surface);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+.link-url {
+    font-size: 0.75rem;
+    color: var(--md-on-surface-variant);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+
+/* ---- 状态徽章(MD3 辅助标签 + leading 圆点) ----
+   右侧对齐,带状态色小圆点(像 MD3 的 status indicator) */
+.status-badge {
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 4px 10px 4px 8px;
+    border-radius: var(--md-shape-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    align-self: center;
+    position: relative;
+    z-index: 1;
+}
+/* leading 圆点指示器 */
+.status-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+.status-badge.alive { background: var(--md-success-container); color: var(--md-on-success-container); }
+.status-badge.dead { background: var(--md-error-container); color: var(--md-on-error-container); }
+.status-badge.timeout { background: var(--md-warning-container); color: var(--md-on-warning-container); }
+.status-badge.error { background: var(--md-warning-container); color: var(--md-on-warning-container); }
+
+.footer-note {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--md-on-surface-variant);
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--md-outline-variant);
+}

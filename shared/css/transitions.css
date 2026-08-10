@@ -1,0 +1,291 @@
+/* ========== 全局过渡动画系统 ==========
+   统一管理全站所有页面/窗口/组件的过渡动画。
+   
+   规范：
+   - 动画持续时间：0.2s（最短）~ 0.3s（最长）
+   - 帧率控制：will-change 提示浏览器优化合成层，避免主线程阻塞
+   - 缓动曲线：使用 MD3 标准 easing (cubic-bezier(0.2, 0, 0, 1))
+   
+   使用方式：
+   - 页面级别：在 <body> 或主容器上添加 .page-enter 类
+   - 窗口/弹窗：添加 .window-enter / .window-exit 类
+   - 卡片/列表项：添加 .item-enter 类
+   - 通用淡入：添加 .fade-in 类
+   - 通用滑入：添加 .slide-up / .slide-down 类
+   ============================================================ */
+
+/* ---- 帧率优化基础 ----
+   will-change 提前告知浏览器哪些属性会变化，
+   浏览器可提前创建合成层，确保 60fps 渲染。
+   动画结束后自动移除 will-change，释放 GPU 内存。 */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ---- CSS 自定义属性（动画令牌）---- */
+:root {
+    --anim-duration-short: 200ms;       /* 最短动画 0.2s */
+    --anim-duration-medium: 250ms;      /* 中等动画 0.25s */
+    --anim-duration-long: 300ms;        /* 最长动画 0.3s */
+    --anim-easing: cubic-bezier(0.2, 0, 0, 1);  /* MD3 标准缓动 */
+    --anim-easing-decel: cubic-bezier(0, 0, 0, 1);  /* 减速（入场） */
+    --anim-easing-accel: cubic-bezier(0.3, 0, 1, 1);  /* 加速（退场） */
+}
+
+/* ---- 页面入场动画 ---- */
+.page-enter {
+    animation: pageEnter var(--anim-duration-long) var(--anim-easing-decel) both;
+    will-change: opacity, transform;
+}
+
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---- 窗口/弹窗入场动画 ---- */
+.window-enter {
+    animation: windowEnter var(--anim-duration-long) var(--anim-easing-decel) both;
+    will-change: opacity, transform;
+}
+
+@keyframes windowEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.92) translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ---- 窗口/弹窗退场动画 ---- */
+.window-exit {
+    animation: windowExit var(--anim-duration-short) var(--anim-easing-accel) both;
+    will-change: opacity, transform;
+}
+
+@keyframes windowExit {
+    from {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.92) translateY(8px);
+    }
+}
+
+/* ---- 通用淡入 ---- */
+.fade-in {
+    animation: fadeIn var(--anim-duration-medium) var(--anim-easing-decel) both;
+    will-change: opacity;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ---- 通用淡出 ---- */
+.fade-out {
+    animation: fadeOut var(--anim-duration-short) var(--anim-easing-accel) both;
+    will-change: opacity;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* ---- 从下方滑入 ---- */
+.slide-up {
+    animation: slideUp var(--anim-duration-medium) var(--anim-easing-decel) both;
+    will-change: opacity, transform;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---- 从上方滑入 ---- */
+.slide-down {
+    animation: slideDown var(--anim-duration-medium) var(--anim-easing-decel) both;
+    will-change: opacity, transform;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---- 从左侧滑入（侧边栏风格）---- */
+.slide-left {
+    animation: slideLeft var(--anim-duration-long) var(--anim-easing-decel) both;
+    will-change: transform;
+}
+
+@keyframes slideLeft {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+/* ---- 从右侧滑入 ---- */
+.slide-right {
+    animation: slideRight var(--anim-duration-long) var(--anim-easing-decel) both;
+    will-change: transform;
+}
+
+@keyframes slideRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+/* ---- 列表项逐个入场（配合 JS 使用）----
+   通过 CSS 自定义属性 --stagger-index 控制延迟，
+   每项间隔 30ms，最多支持 30 项。 */
+.item-enter {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: itemEnter var(--anim-duration-medium) var(--anim-easing-decel) both;
+    animation-delay: calc(var(--stagger-index, 0) * 30ms);
+    will-change: opacity, transform;
+}
+
+@keyframes itemEnter {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---- 遮罩层淡入 ---- */
+.overlay-enter {
+    animation: overlayEnter var(--anim-duration-medium) var(--anim-easing-decel) both;
+    will-change: opacity;
+}
+
+@keyframes overlayEnter {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ---- 遮罩层淡出 ---- */
+.overlay-exit {
+    animation: overlayExit var(--anim-duration-short) var(--anim-easing-accel) both;
+    will-change: opacity;
+}
+
+@keyframes overlayExit {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* ---- 页面退场动画 ----
+   用于页面跳转前：body 添加 .page-exit 类，
+   等 200ms 后再执行跳转 */
+.page-exit {
+    animation: pageExit var(--anim-duration-short) var(--anim-easing-accel) both !important;
+    will-change: opacity, transform;
+}
+
+@keyframes pageExit {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.99);
+    }
+}
+
+/* ---- 侧边栏遮罩：淡入淡出替代 display 切换 ----
+   配合 JS 使用：添加 .active 触发淡入，移除 .active 触发淡出 */
+.sidebar-mask {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--anim-duration-medium) var(--anim-easing-decel),
+                visibility var(--anim-duration-medium);
+    pointer-events: none;
+}
+
+.sidebar-mask.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* ---- 侧边栏按钮逐个入场 ---- */
+.sidebar-btn {
+    opacity: 0;
+    transform: translateX(-12px);
+    animation: sidebarBtnEnter var(--anim-duration-medium) var(--anim-easing-decel) both;
+    animation-delay: calc(var(--stagger-index, 0) * 40ms);
+    will-change: opacity, transform;
+}
+
+.sidebar:not(.open) .sidebar-btn {
+    animation: none;
+    opacity: 1;
+    transform: none;
+}
+
+@keyframes sidebarBtnEnter {
+    from {
+        opacity: 0;
+        transform: translateX(-12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ---- 通用过渡属性快捷类 ----
+   用于需要 transition 而非 animation 的场景 */
+.transition-all {
+    transition: all var(--anim-duration-medium) var(--anim-easing);
+}
+
+.transition-opacity {
+    transition: opacity var(--anim-duration-medium) var(--anim-easing);
+}
+
+.transition-transform {
+    transition: transform var(--anim-duration-medium) var(--anim-easing);
+}
+
+.transition-colors {
+    transition: color var(--anim-duration-short) var(--anim-easing),
+                background-color var(--anim-duration-short) var(--anim-easing),
+                border-color var(--anim-duration-short) var(--anim-easing);
+}

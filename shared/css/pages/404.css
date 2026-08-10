@@ -1,0 +1,178 @@
+/* ========== 404 页面样式 ========== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    height: 100dvh;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Courier New', 'Fira Code', monospace;
+    padding: 16px;
+    overflow: hidden;
+}
+
+.container {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(100, 200, 255, 0.3);
+    border-radius: 20px;
+    padding: 32px 28px;
+    max-width: 560px;
+    width: 100%;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 页面入场动画由 transitions.css 的 .page-enter 统一管理 */
+}
+
+/* 404 大标题 */
+.glitch-title {
+    font-size: clamp(48px, 12vw, 72px);
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 8px;
+    color: #ff6699;
+    text-shadow:
+        2px 2px 0 #00ccff,
+        -2px -2px 0 #ffcc00;
+    margin-bottom: 16px;
+    animation: glitch 2s infinite;
+    line-height: 1;
+}
+
+@keyframes glitch {
+    0%, 100% { transform: skew(0deg, 0deg); opacity: 1; }
+    95% { transform: skew(0deg, 0deg); opacity: 1; }
+    96% { transform: skew(5deg, 1deg); opacity: 0.8; text-shadow: 3px 1px 0 #ff00cc; }
+    97% { transform: skew(-3deg, -1deg); opacity: 0.9; text-shadow: -3px -1px 0 #00ffcc; }
+    98% { transform: skew(0deg, 0deg); opacity: 1; }
+}
+
+/* 分隔线 */
+.separator {
+    text-align: center;
+    color: #6688aa;
+    margin: 12px 0;
+    letter-spacing: 4px;
+    font-size: 0.8rem;
+}
+
+/* 重要提示（置顶） */
+.important-msg {
+    color: #88aaff;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+/* 次要说明 */
+.sub-msg {
+    color: #6688aa;
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+/* 打字机闪烁光标 */
+.cursor {
+    display: inline-block;
+    width: 8px;
+    height: 14px;
+    background-color: #66ffcc;
+    vertical-align: middle;
+    margin-left: 2px;
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* 快捷导航按钮组 */
+.quick-nav {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+.quick-nav a {
+    color: #88aaff;
+    text-decoration: none;
+    font-family: monospace;
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    border: 1px solid rgba(100, 200, 255, 0.25);
+    border-radius: 20px;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.quick-nav a:hover {
+    color: #ffcc88;
+    border-color: rgba(255, 204, 136, 0.4);
+    text-shadow: 0 0 6px #ffaa66;
+    background: rgba(255, 204, 136, 0.05);
+}
+
+/* 底部返回首页（醒目） */
+.back-home {
+    text-align: center;
+    padding-top: 12px;
+    border-top: 1px dashed #335566;
+    width: 100%;
+}
+
+.back-home a {
+    color: #66ffcc;
+    text-decoration: none;
+    font-family: monospace;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    letter-spacing: 2px;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-home a:hover {
+    color: #ffcc88;
+    text-shadow: 0 0 8px #ffaa66;
+    letter-spacing: 3px;
+}
+
+footer {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.65rem;
+    color: #446688;
+    letter-spacing: 1px;
+}
+
+/* 手机适配：进一步压缩间距 */
+@media (max-height: 600px) {
+    .container { padding: 20px 16px; }
+    .glitch-title { margin-bottom: 8px; }
+    .separator { margin: 6px 0; }
+    .important-msg { margin-bottom: 6px; }
+    .sub-msg { margin-bottom: 8px; }
+    .quick-nav { margin-top: 4px; margin-bottom: 6px; gap: 6px; }
+    .back-home { padding-top: 8px; }
+    footer { margin-top: 6px; }
+}

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开发日志 - ACGN导航站</title>
+    <link rel="stylesheet" href="shared/css/reset.css?v=md3-8">
+    <link rel="stylesheet" href="shared/css/pages/devlog.css?v=md3-8">
+    <link rel="stylesheet" href="shared/css/transitions.css?v=md3-8">
+    <link rel="stylesheet" href="desktop/css/layout.css?v=md3-9" media="screen">
+</head>
+<body class="page-enter">
+<div class="sub-topbar">ACGN NAVIGATION SYSTEM</div>
+<div class="sub-masthead">
+    <div class="sub-masthead-left">
+        <div class="sub-logo">ACGN</div>
+        <div class="sub-masthead-title">ACGN导航站</div>
+    </div>
+    <div class="sub-masthead-right">
+        <a href="index.html" class="sub-back-btn">← 返回首页</a>
+    </div>
+</div>
+    <a href="index.html" class="back-link">← 返回导航站</a>
+    <h1>开发日志</h1>
+
+    <div class="log-entry">
+        <div class="log-date">2026-07-15</div>
+        <div class="log-title"><strong>修复</strong>：反馈系统"网络错误"误报 + 后端 PHP 兼容性</div>
+        <div class="log-content">
+            <strong>前端 feedback.js</strong><br>
+            - 统一用 <code>res.text()</code> + 手动 <code>JSON.parse()</code> 替代 <code>res.json()</code>，避免响应被 PHP warning 污染时直接抛 SyntaxError 导致"网络错误"误报<br>
+            - 非 2xx 状态码（400/429/503）时提取后端 <code>msg</code> 直接展示，不再显示"网络错误"<br>
+            - 通过 <code>_isServerMsg</code> 标记区分服务端错误和真实网络错误，TypeError（fetch 失败）时才提示"网络连接失败"<br><br>
+            <strong>后端 send_feedback.php</strong><br>
+            - <strong>ob_start() + ob_end_clean()</strong>：任何 PHP warning/notice 不会污染 JSON 响应<br>
+            - <strong>0o600 → 0600</strong>：兼容 PHP &lt; 8.1（<code>0o</code> 前缀是 PHP 8.1+ 八进制语法）<br>
+            - <strong>SMTP 超时</strong>：新增 <code>stream_set_timeout(10)</code> 防止 <code>fgets</code> 无限阻塞<br>
+            - EHLO 失败时自动回退 HELO，提高 SMTP 兼容性<br>
+            - <code>sm tp_read()</code> 加 <code>strlen >= 4</code> 安全检查，防止空行越界<br>
+            - 所有错误返回统一走 <code>json_exit()</code>，HTTP 状态码正确（400/429/503/500）<br>
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-07-15</div>
+        <div class="log-title"><strong>修复</strong>：主题按钮偶尔无反应 + 内存泄漏大扫除</div>
+        <div class="log-content">
+            <strong>主题按钮</strong><br>
+            - 原因：<code>theme.js</code> 在 <code>&lt;head&gt;</code> 中尽早加载（防闪烁），但那时 <code>#themeToggleBtn</code> 还不存在，<code>addEventListener</code> 绑不上<br>
+            - 修复：三层保障——<code>_themeBound</code> 标记防重复 + 直接绑定 + <code>DOMContentLoaded</code> 延迟重试 + <code>document</code> 事件委托兜底<br><br>
+            <strong>内存泄漏</strong><br>
+            - <code>probe.js render()</code>：事件委托替代逐一绑定，100+ 卡片不再产生大量闭包<br>
+            - <code>probe.js loadImage()</code>：Image 对象成功/失败/超时后 <code>onload=onerror=null; src=''</code>，释放已解码位图内存<br>
+            - <code>main.js</code> / <code>nav-transition.js</code>：导航 <code>setTimeout</code> 存储引用，<code>beforeunload</code> 时取消<br>
+            - <code>music.js</code>：页面离开 <code>cleanupAudio()</code> 暂停 + 移除事件监听 + 清空 src，释放 playlist 数据<br>
+            - <code>feedback.js</code>：ESC 关闭的匿名函数改为命名引用，<code>beforeunload</code> 时 <code>removeEventListener</code><br>
+            - <code>class.html</code>：video <code>preload="none"</code> 延迟加载；切换平台时暂停隐藏区域的 video<br>
+            - <code>404.html</code>：<code>setInterval</code> 存储引用，<code>beforeunload</code> 时 <code>clearInterval</code>
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-07-15</div>
+        <div class="log-title">模块化目录结构重构（shared / desktop / mobile）</div>
+        <div class="log-content">
+            - <strong>shared/</strong>：共用 CSS/JS（theme.css、reset.css、transitions.css、components.css、各页面 CSS、config.js、probe.js 等）<br>
+            - <strong>desktop/</strong>：电脑端专属布局（NASA 三层导航 CSS + JS）<br>
+            - <strong>mobile/</strong>：移动端专属布局（抽屉侧边栏 CSS + JS）<br>
+            - 三个 CVE 详情页 CSS 合并为 <code>shared/css/pages/cve-detail.css</code>（99% 相同）<br>
+            - 所有 HTML 引用路径更新为模块化路径，旧 <code>css/</code> <code>js/</code> 目录已删除<br>
+            - 所有样式通过 <code>@media</code> 媒体查询自动切换桌面/移动端，无冲突
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-07-15</div>
+        <div class="log-title">桌面端 NASA 通讯器风格三层导航</div>
+        <div class="log-content">
+            - <strong>topbar</strong>：顶部蓝色细条，大写 "ACGN NAVIGATION SYSTEM"，白色居中<br>
+            - <strong>masthead</strong>：中间层，左侧 Logo（36px 方形蓝色 "ACGN"）+ 站点名，右侧探测站点/主题按钮<br>
+            - <strong>mega-nav</strong>：主导航条，6 个主导航项（首页/资源教学/CVE 归档/开发日志/反馈/播放器），底部下划线高亮当前页<br>
+            - <strong>mega-panel</strong>：hover 导航项展开 Mega Menu，3 列分组（快速访问 / 资源 / 更多），带图标+标题+描述<br>
+            - <strong>status-bar</strong>：底部状态条，脉冲绿点 "系统在线" + 实时日期<br>
+            - 子页面（class/devlog/404/CVE）统一 NASA 顶部栏（蓝色细条 + Masthead + 返回首页按钮），移动端自动隐藏<br>
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-07-15</div>
+        <div class="log-title">手机端侧边栏优化</div>
+        <div class="log-content">
+            - 去掉侧边栏头部"导航菜单"和底部"ACGN 导航站"文字，简化界面<br>
+            - 标题 "ACGN导航站" 居中显示，字号从 1.5rem 缩小到 1.15rem<br>
+            - 主题切换按钮从探测站点右侧移到左侧，与探测站点并排
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-07-01</div>
+        <div class="log-title">PHP 后端文件结构归档</div>
+        <div class="log-content">
+            - 新建 <code>php/</code> 文件夹统一存放所有 PHP 后端文件<br>
+            - 迁移 5 个 PHP 文件：<code>probe_cache.php</code>、<code>get_last_error.php</code>、<code>send_feedback.php</code>、<code>ncm_proxy.php</code>、<code>examine_URL.php</code> → <code>php/</code><br>
+            - 更新前端引用路径：config.js（2 处）、music.js（2 处）、feedback.js（1 处）<br>
+            - 修复 PHP 内部缓存路径：<code>__DIR__ . '/cache'</code> → <code>__DIR__ . '/../cache'</code>（probe_cache.php、send_feedback.php）<br>
+            - 根目录更整洁，后端代码集中管理
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-07-01</div>
+        <div class="log-title">CVE 文件结构重构</div>
+        <div class="log-content">
+            - 新建 <code>cve/</code> 文件夹作为 CVE 技术归档入口，<code>cve/index.html</code> 为列表页（原 cve-index.html）<br>
+            - 新建 <code>cve/cves/</code> 子文件夹存放所有 CVE 详情页，结构：<code>cve/cves/cve-XXXX-XXXX.html</code><br>
+            - 迁移 CVE-2026-0866、CVE-2023-36584、CVE-2016-3714 至 cve/cves/，统一更新 CSS/JS 引用路径为 <code>../../css/</code> / <code>../../js/</code><br>
+            - 列表页详情页链接更新为 <code>cves/cve-XXXX-XXXX.html</code>，详情页返回链接更新为 <code>../index.html</code><br>
+            - 全站引用同步更新：config.js 侧边栏、404 快捷导航、devlog.html 历史记录中的链接指向<br>
+            - 删除根目录下旧的 cve-index.html 及 3 个 cve-XXXX-XXXX.html，根目录更整洁
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-07-01</div>
+        <div class="log-title">全站安全审查与后端加固</div>
+        <div class="log-content">
+            - <strong>高危修复</strong>：examine_URL.php 与 probe-server/server.js 新增 SSRF 防护 <code>isSafeUrl()</code>，禁止访问内网 IP / 私有地址 / 非 http(s) 协议<br>
+            - <strong>参数修复</strong>：send_feedback.php 频率限制中 <code>$max_requests - count - 1</code> 漏写 <code>$</code> 导致 remaining 恒为 9，已修正为 <code>$count</code><br>
+            - <strong>输入校验</strong>：ncm_proxy.php 新增 action 白名单、songId 强制 <code>ctype_digit</code> 整数过滤、bitrate 白名单、keyword 100 字长度限制<br>
+            - <strong>内存泄漏修复</strong>：music.js 新增 <code>cleanupAudio()</code>，切歌/切音质前移除旧 Audio 对象的 timeupdate/ended/loadedmetadata 监听器<br>
+            - <strong>防御增强</strong>：probe.js 新增 <code>safeHostname()</code> 包装 <code>new URL()</code>，防止异常 URL 阻断渲染<br>
+            - <strong>CORS 收紧</strong>：get_last_error.php 从 <code>*</code> 改为同源校验，防止第三方网站读取后端错误信息<br>
+            - <strong>频率限制</strong>：probe_cache.php 新增 IP 写入冷却（5 秒间隔），防止高频刷写导致 IO 压力
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-07-01</div>
+        <div class="log-title">全局动画系统增强</div>
+        <div class="log-content">
+            - 新增 <code>.page-exit</code> 退场动画（0.2s 淡出+微缩），所有站内链接跳转前播放，告别生硬刷新<br>
+            - 侧边栏遮罩从 <code>display:none/block</code> 硬切换改为 <code>opacity+visibility</code> transition（0.25s 淡入淡出）<br>
+            - 侧边栏按钮新增 stagger 逐个入场动画（40ms 间隔从左侧滑入）<br>
+            - 统一全站 8 个页面的入场动画为 <code>transitions.css</code> 的 <code>.page-enter</code>，清理 5 个 CSS 文件中重复定义的 <code>@keyframes fadeInUp/pageEnter/itemEnter</code><br>
+            - 404 页面纳入 transitions.css 体系，新增引用与 <code>.page-enter</code> 类，<code>prefers-reduced-motion</code> 无障碍保护覆盖全站<br>
+            - 新建 <code>js/nav-transition.js</code>，子页面统一拦截站内链接实现退场过渡
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-30</div>
+        <div class="log-title">侧边栏更新 & 用户反馈系统</div>
+        <div class="log-content">
+            - "网盘审查攻防技术分享与转载" 改为 "CVE 技术归档"，链接改为 cve/ 索引页<br>
+            - 新增"反馈与建议"按钮，点击打开 MD3 Dialog 风格反馈弹窗<br>
+            - 反馈弹窗支持 5 种类型：资源分享、Bug 反馈、功能建议、CVE/安全、其他<br>
+            - 新增 css/feedback.css + js/feedback.js + send_feedback.php，通过邮件发送到站长 QQ 邮箱
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-30</div>
+        <div class="log-title">新增 CVE 技术归档系统</div>
+        <div class="log-content">
+            - 创建索引页 cve/index.html，卡片式网格布局展示所有 CVE 条目<br>
+            - 新增 CVE-2023-36584（Windows MOTW 标记绕过）详情页<br>
+            - 新增 CVE-2016-3714（ImageTragick 命令执行）详情页<br>
+            - 所有 CVE 页面 HTML 与 CSS 完全分离，统一 GitHub Dark 风格
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-30</div>
+        <div class="log-title">全局过渡动画系统</div>
+        <div class="log-content">
+            - 新建 css/transitions.css，统一管理全站所有页面/窗口/组件的过渡动画<br>
+            - 动画持续时间 0.2s-0.3s，帧率通过 will-change 优化至 60fps<br>
+            - 支持 prefers-reduced-motion 无障碍访问<br>
+            - 覆盖场景：页面入场、窗口弹窗、列表逐项入场、遮罩淡入淡出、通用滑入
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-30</div>
+        <div class="log-title">404 页面重构</div>
+        <div class="log-content">
+            - 重要信息置顶，次要信息在下，整页内容一页展示完<br>
+            - 新增快捷导航按钮组：首页、解压教学、开发日志、CVE 归档<br>
+            - 手机/电脑双端适配，使用 clamp() 和 100dvh 确保无需滚动<br>
+            - 小屏幕自动压缩间距
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-30</div>
+        <div class="log-title">补全未完成内容与外链提示</div>
+        <div class="log-content">
+            - CVE-2026-0866 参考链接填入 5 个真实 URL（CERT/CC、OPSWAT、Malwarebytes、SANS ISC、GitHub）<br>
+            - class.html 弹窗填入实用工具链接（ZArchiver、7-Zip、WinRAR、Keka 等）<br>
+            - 所有需梯子的外链添加"⚠ 需梯子"提示标记<br>
+            - 全站 JS/CSS 版本号升级至 md3-7，强制浏览器刷新缓存
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-20</div>
+        <div class="log-title">站点卡片 MD3 规范化重构</div>
+        <div class="log-content">
+            - <strong>移除非规范色条</strong>:删除卡片顶部的 <code>::before</code> 3px 色条(自创设计),MD3 卡片靠 state-layer + elevation 表达状态,不用色条<br>
+            - <strong>新增 state-layer 交互</strong>:卡片悬停时叠加 8% 透明度的 primary 色层(<code>::after</code> 伪元素),按下时 12%——这是 MD3 可点击元素的核心交互反馈规范<br>
+            - <strong>图标容器品牌化</strong>:从灰底圆形改为 <code>primary-container</code> 晴空蓝方形容器(圆角 md=12px),呼应品牌色,与卡片底色对比更分明<br>
+            - <strong>布局重构</strong>:状态徽章从 link-info 内部移出,改为卡片直接子级右对齐(trailing);link-info 只保留名称+域名,层次更清晰<br>
+            - <strong>状态徽章升级</strong>:加 leading 小圆点(<code>::before</code> 6px 圆点),像 MD3 status indicator;圆角与 padding 调整为 MD3 辅助标签标准<br>
+            - <strong>卡片风格</strong>:从 Elevated 改为 Filled Card(边框 + container 底色),圆角升至 lg(16px),hover 时 elevation 提升到 level-1<br>
+            - 版本号升至 <code>md3-5</code> 强制缓存失效
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-20</div>
+        <div class="log-title">全站 emoji 替换为 Material Design 3 SVG 图标</div>
+        <div class="log-content">
+            - <strong>新建</strong> <code>js/icons.js</code>:集中定义 18 个 MD3 图标(Material Symbols Outlined 路径,Apache 2.0),统一 <code>&lt;svg class="md-icon"&gt;</code> 格式,<code>fill=currentColor</code> 自动跟随文字色(适配亮/暗主题)<br>
+            - <strong>为什么不用图标字体</strong>:Material Symbols 字体托管在 Google Fonts,国内访问不稳定(GFW);改用内联 SVG——零外部依赖、不受网络影响、完全可控<br>
+            - <strong>替换清单</strong>(共 18 处 emoji):<br>
+            　· 顶栏:菜单 ☰→menu、探测 ⟳→refresh、主题 🖥️→desktop<br>
+            　· 页脚:⚡→bolt<br>
+            　· 灵动岛/播放器标题:🎵→music_note<br>
+            　· 播放控件:⏮▶⏭→skip_previous/play_arrow/skip_next、⏸→pause(JS 动态切换)<br>
+            　· 侧边栏:📝→edit_note、🎵→queue_music(config.js 加 icon 字段 + sidebar.js 渲染)<br>
+            　· 站点占位:🔗→link(probe.js render)<br>
+            　· 主题三态:☀️→light_mode、🌙→dark_mode、🖥️→desktop(theme.js 内联 SVG)<br>
+            - <strong>CSS</strong>:新增 <code>.md-icon</code> 通用样式(width/height 跟随 font-size)+ sm/xs 尺寸变体<br>
+            - <strong>关键处理</strong>:theme.js 在 <code>&lt;head&gt;</code> 早于 icons.js 加载,故主题图标采用内联 SVG 路径(不依赖 ICONS 全局),其余脚本通过 <code>icon(name)</code> 引用<br>
+            - favicon 的 📡 保留(SVG data URI,非显示元素);代码注释中的 → 箭头保留(非 emoji)
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-20</div>
+        <div class="log-title">新增:亮/暗色主题切换(晴空蓝暗色版)</div>
+        <div class="log-content">
+            - <strong>三态切换</strong>:亮色 ☀️ → 暗色 🌙 → 跟随系统 🖥️,循环切换,localStorage 记忆用户选择<br>
+            - <strong>暗色配色</strong>:晴空蓝暗色版 —— 深蓝黑底 <code>#11131A</code> + 提亮的晴空蓝主色 <code>#A8C7FF</code>,与亮色品牌一致<br>
+            - <strong>实现方式</strong>:复用 MD3 令牌体系,在 <code>theme.css</code> 新增暗色变量块(36 条 mdui <code>-dark</code> 变量 + 对应 <code>--md-*</code>);通过 <code>&lt;html class="mdui-theme-dark/light/auto"&gt;</code> 联动 mdui<br>
+            - <strong>防闪烁</strong>:<code>theme.js</code> 在 <code>&lt;head&gt;</code> 尽早引入,加载时立即应用存储的主题,避免暗色模式首屏白闪(FOUC)<br>
+            - <strong>自动模式</strong>:跟随系统 <code>prefers-color-scheme</code>,用 <code>@media</code> 同步切换 <code>--md-*</code> 变量,系统切换时实时响应<br>
+            - 切换按钮置于顶栏(探测按钮旁),MD3 IconButton 风格,与 menu-btn 统一<br>
+            - 全站颜色均通过 <code>--md-*</code> 变量驱动,无硬编码漏网,主题切换即时生效无残留
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-20</div>
+        <div class="log-title">修复:探测进度条卡 0%(0/0)</div>
+        <div class="log-content">
+            - <strong>现象</strong>:点击「探测站点」进度条显示 <code>0 / 0</code> 不动,说明 <code>siteList.length === 0</code><br>
+            - <strong>诱因</strong>:<code>&lt;head&gt;</code> 里的 mdui.global.js 是同步阻塞脚本,unpkg CDN 在用户网络下若慢或超时,会阻塞 HTML 解析,导致 <code>&lt;body&gt;</code> 末尾的 main.js 延迟执行,<code>bootProbe()</code> 未及时填充 siteList<br>
+            - <strong>修复 1·去阻塞</strong>:mdui 脚本加 <code>defer</code> 异步加载,业务脚本不再受 CDN 延迟影响<br>
+            - <strong>修复 2·startProbe 自愈</strong>:进入时若发现 siteList 为空,自动调用 <code>initSiteList()</code> 补救;连 SITES 都缺失则提示用户刷新<br>
+            - <strong>修复 3·bootProbe 容错</strong>:用 try/catch 包裹整个流程,initSiteList 独立保护,异步环节出错也不阻断首屏渲染<br>
+            - <strong>修复 4·缓存失效</strong>:业务 JS 引用统一加 <code>?v=md3-2</code>,绕过 nginx 的 <code>expires 12h</code> 强缓存,确保用户拿到新版<br>
+            - <strong>验证</strong>:jsdom 真实模拟点击按钮,<code>siteList.length=105</code>、进度条 <code>105/105</code>、无报错
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-20</div>
+        <div class="log-title">修复:探测站点功能的多个问题</div>
+        <div class="log-content">
+            - <strong>问题1·图标大量丢失(主因)</strong>:原逻辑只尝试 <code>/favicon.ico</code> 单一路径,实测 <code>lzacg.org</code> 返回 404、<code>touchgal.com</code> 返回 403 防盗链,导致图标普遍为 null<br>
+            - <strong>修复</strong>:改为多候选路径依次尝试 —— <code>/favicon.ico</code> → <code>/favicon.png</code> → <code>/favicon.svg</code> → Google S2 服务兜底(<code>google.com/s2/favicons</code>,跨域友好、几乎万能)<br>
+            - <strong>问题2·探测中断致按钮卡死</strong>:<code>startProbe</code> 若中途抛异常,<code>isProbing</code> 永不复位,按钮永久 disabled、进度条残留<br>
+            - <strong>修复</strong>:用 <code>try/finally</code> 包裹主循环,无论成功失败 <code>finally</code> 都恢复 UI 状态;异常时尽量用已收集的结果渲染并提示<br>
+            - <strong>问题3·首屏启动逻辑冗余</strong>:<code>bootProbe</code> 末尾 if/else 两分支都执行同一 <code>startProbe(true)</code><br>
+            - <strong>修复</strong>:简化为单次调用,并改为按是否有可见结果决定静默与否 —— 首次访客(无任何旧结果)显示进度条,回访用户静默刷新<br>
+            - <strong>问题4·上报 payload 冗余</strong>:回传服务器时 <code>icon:null</code> 的字段也全量写入<br>
+            - <strong>修复</strong>:精简 <code>reportToServer</code>,icon 为空时不上传该字段,减小传输体积
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-20</div>
+        <div class="log-title">修复:mdui 变量格式错误导致 UI 未应用</div>
+        <div class="log-content">
+            - <strong>根因</strong>:mdui v2 内部以 <code>rgb(var(--mdui-color-primary))</code> 形式消费颜色变量,要求变量值是<strong>逗号分隔的 RGB 数值</strong>(如 <code>11,87,208</code>),而非十六进制<br>
+            - 初版 theme.css 误把 mdui 变量写成 <code>--mdui-color-primary: #0B57D0</code>,被解析成 <code>rgb(#0B57D0)</code> 非法值,mdui 组件全部 fallback 到默认紫色<br>
+            - <strong>修复</strong>:重写 theme.css,36 个 mdui <code>-light</code> 后缀变量全部转成 RGB 数值格式,同时保留本项目专用 <code>--md-*</code> 十六进制变量不变<br>
+            - <strong>缓存问题</strong>:nginx 对 js/css 设了 <code>expires 12h</code> 强缓存,旧版 CSS 会被浏览器/CDN 缓存导致用户看不到更新<br>
+            - <strong>修复</strong>:index.html 的 CSS 引用加版本号 <code>?v=md3-2</code>,强制浏览器重新拉取<br>
+            - 经验证:变量格式 0 残留、线上返回正确、链路解析到 body 背景为雪雾白 <code>#F8FBFF</code>
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-20</div>
+        <div class="log-title">主页 UI 重构:Material Design 3(晴空蓝 + 雪雾白)</div>
+        <div class="log-content">
+            - <strong>配色重构</strong>:从暗色蓝紫风(<code>#0a0a1a</code> / <code>#6ea8fe</code>)整体迁移至 MD3 明色主题<br>
+            - 新增 <code>css/theme.css</code> 设计令牌层:晴空蓝(<code>#0B57D0</code> / <code>#4A9FE8</code>)+ 雪雾白(<code>#F8FBFF</code> / <code>#FAFCFE</code>),全部颜色 CSS 变量化,一处改全站生效<br>
+            - 引入 mdui v2 组件库(CDN),锁定明色主题 <code>mdui-theme-light</code>,令牌覆盖为晴空蓝雪雾白<br>
+            - <strong>主页组件</strong>:Top App Bar、Filled Tonal Button、Elevated Card、Linear Progress、Navigation Drawer、状态徽章全部按 MD3 规范重绘(elevation 阴影 + state-layer 交互)<br>
+            - <strong>音乐播放器</strong>:Dialog、Outlined Text Field、Filled Button、IconButton、List Item 全部 MD3 化;播放按钮改为 FAB 风格高亮<br>
+            - <strong>顺手修复</strong>:<code>progressFill</code> id 在探测进度条与音乐播放进度条间重复(HTML 非法),已拆分为 <code>probeProgressFill</code> / <code>musicProgressFill</code><br>
+            - 清理 music.js 中 3 处硬编码内联样式 <code>color:#aaa</code>,改用 <code>.music-list-empty</code> class 适配主题<br>
+            - <strong>未改动</strong>:JS 逻辑、后端 PHP、其余子页面(class/cve/devlog/404)均保留原样,JS 依赖的 class 名全部沿用
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-16</div>
+        <div class="log-title">服务器共享缓存：不主动探测也能看到结果</div>
+        <div class="log-content">
+            - <strong>新增</strong>：<code>probe_cache.php</code> —— 服务器端共享探测缓存接口<br>
+            - 用户主动探测完成后，结果会自动回传服务器（POST <code>action=write</code>），合并到全局共享缓存<br>
+            - 新访客打开页面时，即使从未探测，也会先拉取服务器缓存（GET <code>action=read</code>）直接渲染结果<br>
+            - <strong>三级缓存策略</strong>：本地 localStorage（最快）→ 服务器共享缓存（次之）→ 现场探测（兜底）；自动取较新者，互相补充<br>
+            - 缓存有效期 6 小时，30 分钟内不重复探测；服务器缓存自动剔除过期条目，控制体积<br>
+            - 写入采用原子操作（临时文件 + rename），并发安全<br>
+            - 结果回流由访客众包：用得越多，缓存越准、首屏越快
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-16</div>
+        <div class="log-title">探测大幅提速：竞速 + 短超时 + 缓存秒出</div>
+        <div class="log-content">
+            - <strong>竞速探测</strong>：img 与 no-cors fetch 并行（<code>Promise.any</code>），任一成功即判可达；可达站几百毫秒出结果，死站也只等一个超时周期<br>
+            - <strong>短超时高并发</strong>：超时 6s → 3s，并发 12 → 20，整站探测从十几秒压到几秒<br>
+            - <strong>本地缓存</strong>：探测结果写入 <code>localStorage</code>，有效期 6 小时<br>
+            - <strong>首屏秒出</strong>：页面加载时先用缓存渲染，30 分钟内不自动重测；用户点击「探测站点」仍可手动刷新<br>
+            - 取消启动时清空状态，探测中页面保持不变、避免闪烁，全部完成后一次性过渡渲染
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-06-15</div>
+        <div class="log-title">探测改为浏览器本地直连，服务器零带宽</div>
+        <div class="log-content">
+            - <strong>核心改动</strong>：探测不再经服务器中转，改由访客浏览器直接请求目标站点<br>
+            - 用 <code>&lt;img&gt;</code> 加载 <code>favicon.ico</code> —— 一次请求同时完成「存活探测 + 图标获取」<br>
+            - favicon 走不通时用 <code>no-cors fetch</code> 兜底再判一次，避免误杀不放 favicon 的存活站点<br>
+            - 服务器带宽消耗由「每站点全量响应 ×2」降为 <strong>0</strong>，从根本上解决带宽吃紧导致的卡顿<br>
+            - 前端并发由 5 提升到 12，整站探测在访客浏览器内几秒完成<br>
+            - 图标改为直接引用目标站 favicon URL（加 <code>referrerpolicy="no-referrer"</code>），无需再 base64 中转<br>
+            - 后端 <code>examine_URL.php</code> / Node 探测服务保留备用，但探测主流程已不再依赖<br>
+            - 注：探测结果现在反映「访客视角」的可达性，对导航站而言更贴近实际体验
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-05-14</div>
+        <div class="log-title">网站图标回归 & 显示策略优化</div>
+        <div class="log-content">
+            - 修复 PHP 图标获取功能（绕过 finfo_open 限制）<br>
+            - 图标显示策略调整：<strong>仅当用户点击"探测站点"并通过检测后，才显示网站图标</strong><br>
+            - 未探测或探测失败的站点，保持链接表情 🔗<br>
+            - 避免不必要的图标请求，提升页面加载速度
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-05-14</div>
+        <div class="log-title">探测引擎升级：PHP → Node.js</div>
+        <div class="log-content">
+            - 将站点探测从 PHP 串行（90秒超时）迁移到 Node.js 并行（5秒超时）<br>
+            - 修复图标获取功能，绕过 finfo_open 限制<br>
+            - 优化超时设置，死链最快 1 秒返回<br>
+            - 前端并发数调整为 5，大幅提升探测速度
+        </div>
+    </div>
+
+    <div class="log-entry">
+        <div class="log-date">2026-05-14</div>
+        <div class="log-title">侧边栏新增开发日志入口</div>
+        <div class="log-content">
+            - 在侧边栏"失效/超时区"下方添加"开发日志"按钮<br>
+            - 点击跳转到本页面，方便记录和查看站点更新
+        </div>
+    </div>
+
+<script src="shared/js/nav-transition.js?v=md3-8"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.log-entry').forEach(function(entry, i) {
+        entry.style.setProperty('--stagger-index', i);
+        entry.classList.add('item-enter');
+    });
+});
+</script>
+</body>
+</html>
