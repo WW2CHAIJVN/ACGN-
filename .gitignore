@@ -4,3 +4,7 @@ cache/
 # 临时上传文件(含大文件)
 *.upload.tmp
 *.tmp
+
+# 大体积安装包(超 GitHub 100MB 限制,保留在服务器本地,不入库)
+SHULIKO/声库下载安装程序.exe
+*.exe
