@@ -76,18 +76,44 @@ body.sidebar-collapsed {
     gap: 2px;
 }
 
-/* ---- 桌面端常驻态:关闭移动端的逐个入场动画,直接显示 ---- */
+/* ---- 桌面端侧边栏按钮(完整基础样式,不依赖 mobile/layout.css) ----
+   mobile/layout.css 的 .sidebar-btn 在 @media(max-width:1023px) 内,
+   桌面端(≥1024px)取不到,这里补全。同时关闭移动端的逐个入场动画。 */
 .sidebar .sidebar-btn {
+    background: transparent;
+    border: none;
+    color: var(--md-on-surface-variant);
+    padding: 12px 16px;
+    border-radius: var(--md-shape-lg);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     opacity: 1;
     transform: none;
     animation: none;
+    transition: background var(--md-duration-short) var(--md-easing-standard),
+                color var(--md-duration-short) var(--md-easing-standard);
+}
+.sidebar .sidebar-btn .md-icon { font-size: 22px; flex-shrink: 0; }
+
+.sidebar .sidebar-btn:hover {
+    background: color-mix(in srgb, var(--md-primary) 8%, transparent);
+    color: var(--md-on-surface);
+}
+.sidebar .sidebar-btn:active {
+    background: color-mix(in srgb, var(--md-primary) 12%, transparent);
 }
 
 /* 折叠态:隐藏按钮文字,只留图标;图标居中 */
 .sidebar.collapsed .sidebar-btn {
     justify-content: center;
     padding: 12px 0;
-    white-space: nowrap;
 }
 .sidebar.collapsed .sidebar-btn span {
     display: none;
