@@ -1,11 +1,17 @@
 // ========== 侧边栏模块 ==========
-// v2: 增强动画 - 遮罩淡入淡出、按钮逐个入场、页面跳转退场过渡
+// v3: 增强动画 - 遮罩淡入淡出、按钮逐个入场、页面跳转退场过渡
+//     兼容子页面:data-root 路径适配、scroll 按钮按目标存在性过滤
 
 function initSidebar() {
     const menuBtn = document.getElementById('menuBtn');
     const mask = document.getElementById('sidebarMask');
     const sidebar = document.getElementById('sidebar');
     const navContainer = document.getElementById('sidebarNav');
+
+    // 子页面通过 <body data-root="../"> 声明站点根路径前缀;
+    // 首页无此属性,root 为空串,行为与原版一致
+    var root = (document.body.dataset.root || '').replace(/\/+$/, '');
+    root = root ? root + '/' : '';
 
     // 页面跳转带退场动画
     function navigateTo(url) {
@@ -15,11 +21,15 @@ function initSidebar() {
         sidebar.classList.remove('open');
         mask.classList.remove('active');
         setTimeout(function() {
-            window.location.href = url;
+            window.location.href = root + url;
         }, 200);
     }
 
     CONFIG.SIDEBAR.BUTTONS.forEach(function(btn, index) {
+        // scroll 类型按钮:目标元素不存在(子页面无 direct-section 等)则跳过
+        if (btn.type === 'scroll' && btn.target && !document.getElementById(btn.target)) {
+            return;
+        }
         var btnEl = document.createElement('button');
         btnEl.className = 'sidebar-btn';
         // 为按钮设置逐个入场的 stagger index

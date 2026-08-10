@@ -30,7 +30,8 @@ const ICONS = {
 
     // 功能入口类(侧边栏)
     edit_note: '<svg class="md-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 10h11v2H3v-2zm0-2h11V6H3v2zm0 8h7v-2H3v2zm11.41 2.41L17 19.83l3.59-3.59L22 17.66l-5 5-5-5 1.41-1.42z"/></svg>',
-    queue_music: '<svg class="md-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>'
+    queue_music: '<svg class="md-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>',
+    download: '<svg class="md-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>'
 };
 
 // 返回指定图标的 SVG 字符串

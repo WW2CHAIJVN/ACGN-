@@ -12,10 +12,16 @@
     <link rel="stylesheet" href="desktop/css/layout.css?v=md3-9" media="screen">
     <link rel="stylesheet" href="mobile/css/layout.css?v=md3-9" media="screen">
 </head>
-<body class="page-enter">
+<body class="page-enter" data-root="">
+<!-- 移动端：侧边栏遮罩 + 抽屉（桌面端 CSS 隐藏） -->
+<div class="sidebar-mask" id="sidebarMask"></div>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-nav" id="sidebarNav"></div>
+</div>
 <div class="sub-topbar">ACGN NAVIGATION SYSTEM</div>
 <div class="sub-masthead">
     <div class="sub-masthead-left">
+        <button class="menu-btn" id="menuBtn" aria-label="菜单"><svg class="md-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button>
         <div class="sub-logo">ACGN</div>
         <div class="sub-masthead-title">ACGN导航站</div>
     </div>
@@ -391,5 +397,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+<!-- 侧边栏(依赖 icons.js → config.js → sidebar.js) -->
+<script src="shared/js/icons.js?v=md3-8"></script>
+<script src="shared/js/config.js?v=md3-8"></script>
+<script src="mobile/js/sidebar.js?v=md3-8"></script>
+<script>initSidebar();</script>
 </body>
 </html>
